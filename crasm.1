@@ -184,7 +184,8 @@ a register
 .RI ( reg ),
 or a list of registers
 .RI ( reglist ),
-or a reference to a specific bit at a specific address.
+or a reference to a specific bit at a specific address
+.RI ( bspec ).
 
 The following operators are recognized on expressions.
 .TS
@@ -247,7 +248,7 @@ Examples:
 .br
 \fB 'A'-80H \fR
 .br
-\fB (base+0x12) fR
+\fB (base+0x12) \fR
 .PP
 The last example causes a warning because the parenthesis
 were not necessary and might suggest a micro-processor 
