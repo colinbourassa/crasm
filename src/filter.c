@@ -66,8 +66,8 @@ filter(register char *s, register char *fil, ...)
 	
 	do
 	{	if ( *fil==WILDCARD )
-		{	*bufferpos = 0;
-                        char **strptr = va_arg(ap, char**);
+		{	char **strptr = va_arg(ap, char**);
+                        *bufferpos = 0;
                         *strptr = ++bufferpos;
 			if (fil[1]==0)
 			{	
