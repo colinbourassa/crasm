@@ -2,19 +2,17 @@
 ;
 ;  MicroChess (c) 1996-2002 Peter Jennings, 
 ;  mailto:peterj@benlo.com   
-;  http://www.benlo.com
+;  http://www.benlo.com/microchess.html
 ;
 ;***********************************************************************
-; I have been given permission to distribute this program by the
-; author and copyright holder, Peter Jennings.  Please get his 
-; permission if you wish to re-distribute a modified copy of 
-; this file to others.  He specifically requested that his 
-; copyright notice be included in the source and binary images.
-; Thanks! 
-;
+; I have been given permission to distribute this program 
+; by the author and copyright holder, Peter Jennings.  
+; Please get his permission if you wish to 
+; re-distribute by other channels.
+
 ; modified by Daryl Rictor to work over a 
 ; serial terminal connection, August 2002.
-;
+
    cpu 65c02
    page 0,132
 ;
