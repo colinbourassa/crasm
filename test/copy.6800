@@ -28,10 +28,10 @@ copy	ldx  begin
 	txs
 	ldx  dest
 	
-	ldab  len+1
-	ldaa  len
+	ldab len+1
+	ldaa len
 	addb dest+1
-	adda dest
+	adca dest
 	stab dest+1
 	staa dest
 	
