@@ -1,3 +1,6 @@
+;;; Author: Leon Bottou
+;;; Public Domain.
+
 ; Ceci est le code source du programme
 ; contenu dans un modem pilote par 6801.
 ; 
@@ -15,15 +18,11 @@
 ;    - 2k de RAM CMOS (6116) de $d800 a $dfff
 ;    - Une horloge temps reel 6818 sauvegardee
 ;
-;
 ; Le programme ci dessous contient un Moniteur
 ; Hexa (Apple][ like) avec mini-assembleur 
 ; et desassembleur, et le programme de gestion
 ; du modem. Au reset, le CPU branche sur l'un ou
 ; l'autre, selon l'etat d'un switch INMOD.
-
-
-
 
 
 ; Cible: TI ou Motorola 2532
@@ -270,8 +269,6 @@ dixin 	ldab #$7f
 setxcr 	stab aciamode
  	stab aciacr
  	rts
-
-
 
 
 ; SciIrq

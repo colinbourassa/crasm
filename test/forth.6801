@@ -1,7 +1,13 @@
+;;; Author: Leon Bottou
+;;; Public Domain.
+
+; Beginnings of a forth kernel.
+; Good test for macros.
 ;
-; embryon d'un noyau forth
-; en code 6801
-;
+;  http://www.forth.org/
+;  http://www.zetetics.com/bj/papers/moving1.htm
+
+
 
      cpu 6801
      mlist off
@@ -9,10 +15,19 @@
      
      * = $1000
 
+
 smudge = 1<<7
 precedence = 1<<6
 keep = 1<<5
 
+
+;; **********************************
+;; -- create INVOCNAME, WORDNAME [, FLAGS]
+;; Create a forth word WORDNAME into vocabulary INVOCNAME
+;; This macro outputs the word header and defines useful labels
+;;   nfa_WORDNAME - address of header
+;;   lfa_WORDNAME - address of pointer to previous word in vocabulary
+;;   cfa_WORDNAME - address of executable data (just after header)
 
 create	macro
  .start  = *
@@ -28,6 +43,22 @@ create	macro
  .len    = lfa_\2-nfa_\2
 	endm
 
+
+;; **********************************
+;; -- createvoc INVOCNAME,VOCNAME
+;; Create a forth vocabulary VOCNAME in vocabulary INVOCNAME
+;; This macro outputs the word header and defines useful labels
+;;   nfa_VOCNAME  - address of word header
+;;   lfa_VOCNAME  - address of pointer to previous word in voc INVOCNAME
+;;   cfa_VOCNAME  - address of word executable data (jsr dovoc)
+;;   pfa_VOCNAME  - address of vocabulary data for VOCNAME
+;;   lst_VOCNAME  - address of pointer to last word in vocabulary
+;;   vlnk_VOCNAME - address of pointer to parent vocabulary.
+;; The following symbol is modified whenever 
+;; a word is added into the vocabulary VOCNAME
+;;   lstw_VOCNAME - address of last word in vocabulary VOCNAME
+;; until one calls endvoc
+
 createvoc macro
 lstw_\2  = pfa_\1
          create \1,\2
@@ -36,7 +67,25 @@ pfa_\2   db smudge|1,' '
 lst_\2   dw 0
 vlnk_\2  dw pfa_\1
 	endm
-	
+
+;; **********************************
+;; -- endvoc VOCNAME
+;; Terminates definition of vocabulary VOCNAME
+;; This sets the value of pointer at address lst_VOCNAME
+;; No words should be added to the vocabulary.
+
+endvoc macro
+    	  asc "LYB Forth."
+    .loc  = *
+    *     = lst_\1
+	  dw lstw_\1
+    *     = .loc
+	 endm
+
+;; **********************************
+;; -- createforth
+;; Creates the initial vocabulary named FORTH.	
+
 createforth macro
 lstw_forth = 0
 nfa_forth  db 6|smudge
@@ -48,14 +97,18 @@ lst_forth  db 0
 vlnk_forth dw 0
 	endm
 
+;; **********************************
+;; -- start, end, compile
+;; These macros are used to define a forth word.
+;; Usage:
+;;     create INVOCNAME, WORDNAME
+;;     start
+;;       compile WORDNAME
+;;       compile WORDNAME
+;;       ...
+;;     end
+;; What about constants...
 
-endvoc macro
-    	  asc "Copyright L.Y.B."
-    .loc  = *
-    *     = lst_\1
-	  dw lstw_\1
-    *     = .loc
-	 endm
 
 start   macro
 	 jsr docol
@@ -69,13 +122,19 @@ compile macro
 	 dw cfa_\1
 	endm
 
-ip  = $80
-rp  = $82
-dp  = $84
 
-	code
-	
-dovoc rts		; je ne sais pas encore
+;; **********************************
+;; -- docol, endcol, next
+;; The forth interpreter engine.
+;; The forth data stack is the 6801 stack.
+
+
+ip  = $80   ; instruction pointer
+rp  = $82   ; return stack pointer
+dp  = $84   ; used to save the data stack pointer
+
+
+;; docol - start interpreting a forth thread
 
 docol	ldd ip
 	ldx rp
@@ -88,6 +147,8 @@ docol	ldd ip
 	ldx ,x
 	jmp ,x
 
+;; endcol -- return from interpreting a forth thread
+
 endcol	ldx rp
 	inx
 	inx
@@ -98,7 +159,8 @@ endcol	ldx rp
 	stx ip
 	ldx ,x
 	jmp ,x
-	
+
+;; next -- return from assembly code primitive	
 	
 next 	ldx ip
 	inx
@@ -107,13 +169,19 @@ next 	ldx ip
 	ldx ,x
 	jmp ,x
 
+;; dovoc -- undefined yet
+
+dovoc   rts
+
+
+
+;; **********************************
+;; Forth words
 
 	code
-
 	createforth
 
 	code
-	
 	create forth,dup
 	 pulx
 	 pshx
@@ -121,13 +189,11 @@ next 	ldx ip
 	 jmp next
 	
 	code
-	
 	create forth,drop
 	 pulx
 	 jmp next
 	
 	code
-	
 	create forth,ndrop
 	 pulx
     .1	 beq .2
@@ -138,7 +204,6 @@ next 	ldx ip
     .2	 jmp next
     
     	code
-	
 	create forth,swap
 	 pulx
 	 pula
@@ -149,7 +214,6 @@ next 	ldx ip
 	 jmp next
 	
 	code
-	
 	create forth,pick
 	 pula
 	 pulb
@@ -163,7 +227,6 @@ next 	ldx ip
 	 jmp next
 	
 	code
-	
 	create forth,over
 	 pula
 	 pulb
@@ -174,9 +237,7 @@ next 	ldx ip
 	 pshx
 	 jmp next
 	
-	
 	code
-	
 	create forth,rot
 	 pulx
 	 stx dp
@@ -190,21 +251,18 @@ next 	ldx ip
 	 psha
 	 jmp next
 
+	;; USER VOCABULARY
 	code
-
 	createvoc forth,uservoc
 
 	code
-	
-	create uservoc,nothing,precedence	
-				; exemple de mot immediat dans
-	start			; un vocabulaire 'uservoc'
+	create uservoc,dupdrop,precedence	
+	start
 	compile dup
 	compile drop
 	end
 	
 
-	endvoc uservoc		; je n'ai plus le droit 
-				; d'ecrire dans uservoc
+	endvoc uservoc		; Terminate vocabulary USERVOC
 	
-	endvoc forth		; on finit 
+	endvoc forth		; Terminate vocabulry FORTH

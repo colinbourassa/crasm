@@ -1,5 +1,8 @@
+;;; Author: Leon Bottou
+;;; Public Domain.
+
 	nam essai macro
-	page 25,76
+	page 0,132
 	
   depart = $1000
   fin    = $2000
@@ -47,4 +50,5 @@
 	ds  2
 	ds  100,3
 
- enfin  asc "je m'interesse encore au calcul et a l'affichage des trees."
+ enfin  asc "je m'interesse encore au calcul"
+	asc " et a l'affichage des trees.\0"

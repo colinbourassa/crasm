@@ -1,3 +1,6 @@
+;;; Author: Leon Bottou
+;;; Public Domain.
+
 	* equ $2000
 
 	dw end1-4*2

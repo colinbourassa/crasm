@@ -1,6 +1,6 @@
-;
-;  test de INCLUDE
-;
+;;; Author: Leon Bottou
+;;; Public Domain.
+
 	ilist on
 	include testfiles/tstmacros.crasm
 	ilist off

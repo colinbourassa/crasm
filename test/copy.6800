@@ -1,6 +1,5 @@
-;
-;  test de l'assembleur 6800
-;
+;;; Author: Leon Bottou
+;;; Public Domain.
 
 	cpu 6800
 	
@@ -21,6 +20,8 @@
 	wai
 	
 	code
+
+	; copy LEN bytes from BEGIN to DEST
 	
 copy	ldx  begin
 	sts  begin

@@ -1,7 +1,7 @@
+;;; Author: Leon Bottou
+;;; Public Domain.
 
-;  test de l'assembleur Z80
-;  complet
-
+; All Z80 opcodes
 
 	cpu z80	
 	

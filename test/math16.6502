@@ -1,22 +1,19 @@
-;
-;	test 6502
-;
+;;; Author: Leon Bottou
+;;; Public Domain.
+
 
 	cpu 6502
 
-; module de calcul sur 16 bits
-; il y a trois pseudos registres : ACC, ARG, et TEMP
-
+; 16 bit calculus functions.
+; Two pseudoregisters: ACC, ARG
+; Four temporary bytes: TEMP
 
 	dummy
 	
       *	 = $20
-      
-
 acc	 ds 2
 arg	 ds 2
 temp	 ds 4
-
 
 
 movi	macro
@@ -35,14 +32,9 @@ movm	macro
 	
    * = $8000
    
-   	code
-   
-start	nop
-	brk
-
 	code
 	
-add16   lda acc
+add16   lda acc   ; ACC <- ACC + ARG
 	clc
 	adc arg
 	sta acc
@@ -51,15 +43,14 @@ add16   lda acc
 	sta acc+1
 	rts
 
-clr16	lda #0
+clr16	lda #0    ; clear ACC
 	sta acc
 	sta acc+1
 .1	rts
 	
-	
-abs16 	bit acc+1
+abs16 	bit acc+1 ; absolute value of ACC
 	bpl .1
-com16	lda #0
+neg16	lda #0    ; negate ACC
 	sec
 	sbc acc
 	sta acc
@@ -68,7 +59,7 @@ com16	lda #0
 	sta acc+1
 	rts
 
-_com2   lda #0
+neg16a  lda #0    ; negate ARG
 	sec
 	sbc arg
 	sta arg
@@ -77,8 +68,7 @@ _com2   lda #0
 	sta arg+1
 	rts
 	
-	
-sub16   lda acc
+sub16   lda acc   ; ACC <- ACC - ARG
 	sec
 	sbc arg
 	sta acc
@@ -88,16 +78,20 @@ sub16   lda acc
 	rts
 
 	code
+
+ovfl	bit .ov1
+.ov1	rts
 	
-muls16	lda acc+1
+	code
+	
+muls16	lda acc+1 ; ACC <- ACC * ARG
 	eor arg+1
 	sta temp+3
 
 	bit arg+1
 	bpl .0
-	jsr _com2
+	jsr neg16a
 .0	jsr abs16
-
 
 	lda #$80
 	sta temp+1
@@ -128,19 +122,13 @@ muls16	lda acc+1
 	bmi ovfl
 	bit temp+3
 	bpl .3
-	jsr com16
+	jsr neg16
 .3	rts
 
 	code
-
-ovfl	bit .ov1
-.ov1	rts
 	
-	code
-
-	
-divmod  movm acc,temp
-	lda #$01
+divmod  movm acc,temp    ; ACC <- ACC / ARG (unsigned)
+	lda #$01         ; TEMP+2 <- ACC % ARG (unsigned)
 	sta acc
 	asl
 	sta temp+2
@@ -149,7 +137,6 @@ divmod  movm acc,temp
 	lda arg
 	ora arg
 	beq ovfl
-	
 .1	asl temp
 	rol temp+1
 	rol temp+2
@@ -167,39 +154,34 @@ divmod  movm acc,temp
 .2	rol acc
 	rol acc+1
 	bcc .1
-	
 	rts
 	
 	code
 	
-divs16  lda acc+1
+divs16  lda acc+1   ; ACC <- ACC / ARG
 	eor arg+1
 	pha
-
 	bit arg+1
 	bpl .0
-	jsr _com2
+	jsr neg16a
 .0	jsr abs16
-
 	jsr divmod
 	pla
 	bpl .1
-	jmp com16
+	jmp neg16
 .1	rts
 
 	code
 
-mod16	lda acc+1
+mod16	lda acc+1   ; ACC <- ACC % ARG
 	pha
-	
 	bit arg+1
 	bpl .0
-	jsr _com2
+	jsr neg16a
 .0	jsr abs16
-
 	jsr divmod
 	movm temp+2,acc
 	pla
 	bpl .1
-	jmp com16
+	jmp neg16
 .1	rts
