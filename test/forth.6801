@@ -1,0 +1,210 @@
+;
+; embryon d'un noyau forth
+; en code 6801
+;
+
+     cpu 6801
+     mlist off
+     page 0,132
+     
+     * = $1000
+
+smudge = 1<<7
+precedence = 1<<6
+keep = 1<<5
+
+
+create	macro
+ .start  = *
+   if \3
+ nfa_\2  db .len | smudge | \3
+   else
+ nfa_\2  db .len | smudge
+   endc
+ 	 asc "\2"
+ lfa_\2  dw lstw_\1
+ lstw_\1 = .start
+ cfa_\2  = *
+ .len    = lfa_\2-nfa_\2
+	endm
+
+createvoc macro
+lstw_\2  = pfa_\1
+         create \1,\2
+	 jsr dovoc
+pfa_\2   db smudge|1,' '
+lst_\2   dw 0
+vlnk_\2  dw pfa_\1
+	endm
+	
+createforth macro
+lstw_forth = 0
+nfa_forth  db 6|smudge
+	   asc "forth"
+lfa_forth  = 0
+cfa_forth  jsr dovoc
+pfa_forth  db smudge|1,' '
+lst_forth  db 0
+vlnk_forth dw 0
+	endm
+
+
+endvoc macro
+    	  asc "Copyright L.Y.B."
+    .loc  = *
+    *     = lst_\1
+	  dw lstw_\1
+    *     = .loc
+	 endm
+
+start   macro
+	 jsr docol
+	endm
+
+end	macro
+	 dw endcol
+	endm
+
+compile macro
+	 dw cfa_\1
+	endm
+
+ip  = $80
+rp  = $82
+dp  = $84
+
+	code
+	
+dovoc rts		; je ne sais pas encore
+
+docol	ldd ip
+	ldx rp
+	std 0,x
+	dex
+	dex
+	stx rp
+	pulx
+	stx ip
+	ldx ,x
+	jmp ,x
+
+endcol	ldx rp
+	inx
+	inx
+	stx rp
+	ldx ,x
+	inx
+	inx
+	stx ip
+	ldx ,x
+	jmp ,x
+	
+	
+next 	ldx ip
+	inx
+	inx
+	stx ip
+	ldx ,x
+	jmp ,x
+
+
+	code
+
+	createforth
+
+	code
+	
+	create forth,dup
+	 pulx
+	 pshx
+	 pshx
+	 jmp next
+	
+	code
+	
+	create forth,drop
+	 pulx
+	 jmp next
+	
+	code
+	
+	create forth,ndrop
+	 pulx
+    .1	 beq .2
+         pula
+         pula
+	 dex
+	 bra .1
+    .2	 jmp next
+    
+    	code
+	
+	create forth,swap
+	 pulx
+	 pula
+	 pulb
+	 pshx
+	 pshb
+	 psha
+	 jmp next
+	
+	code
+	
+	create forth,pick
+	 pula
+	 pulb
+	 lsrd
+	 sts dp
+	 addd dp
+	 std dp
+	 ldx dp
+	 ldx ,x
+	 pshx
+	 jmp next
+	
+	code
+	
+	create forth,over
+	 pula
+	 pulb
+	 pulx
+	 pshx
+	 pshb
+	 psha
+	 pshx
+	 jmp next
+	
+	
+	code
+	
+	create forth,rot
+	 pulx
+	 stx dp
+	 pulx
+	 pula
+	 pulb
+	 pshx
+	 ldx dp
+	 pshx
+	 pshb
+	 psha
+	 jmp next
+
+	code
+
+	createvoc forth,uservoc
+
+	code
+	
+	create uservoc,nothing,precedence	
+				; exemple de mot immediat dans
+	start			; un vocabulaire 'uservoc'
+	compile dup
+	compile drop
+	end
+	
+
+	endvoc uservoc		; je n'ai plus le droit 
+				; d'ecrire dans uservoc
+	
+	endvoc forth		; on finit 

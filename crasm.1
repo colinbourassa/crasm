@@ -1,0 +1,557 @@
+.\" Copyright (c) 1987 Leon Bottou
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual. Otherwise check the web site
+.\" of the Free Software Foundation at http://www.fsf.org.
+.\"
+.TH CRASM 1 "1/9/1987" "Crasm-1.3" "Crasm-1.3"
+.de SS
+.SH \\0\\0\\0\\$*
+..
+.SH NAME
+crasm \- Cross assembler for 6800/6801/6803/6502/65C02/Z80
+
+.SH SYNOPSIS
+.BI "crasm [-o " "codefile" "] [-slx] " "asmfile"
+
+Assemble the microprocessor program 
+.I asmfile 
+and produce output file 
+.I codefile
+in Intel HEX or Motorola S Code format.
+A program listing and a symbol table are also produced
+on the standard output.
+The current version of
+.B crasm
+can assemble programs for the 
+.BR 6800, 
+.BR 6801, 
+.BR 6803, 
+.BR 6502, 
+.BR 65C02, 
+and
+.BR Z80
+processors.
+The full list is printed when you invoke
+.B crasm
+without arguments.
+
+.SH OPTIONS
+.TP
+.BI "-o " codefile
+Specify the name of the output file.
+No output file is produced without this option.
+.TP
+.BI "-s"
+Disable warnings.
+.TP
+.BI "-l"
+Disable program listing output.
+.TP
+.BI "-x"
+Disable symbol table output.
+.PP
+
+
+.SH SYNTAX
+
+Each line of the assembly program
+should follow one of the following templates,
+where the brackets delimit optional parts.
+.IP ""
+.BI "[;" comment "]"
+.br
+.BI "" label " = " expression " [;" comment "]"
+.br
+.BI "[" label "] " mnemonic " " operand " [;" comment "]"
+.PP
+Comments are introduced by a semicolon 
+.BR "" "(" ";" ")"
+and extend to the end of the line.
+Labels are identifiers containing up to 36 alphanumeric 
+characters (including period and underscore). Labels
+cannot start with a digit.
+The format of the mnemonics and operands 
+field depends on the selected micro-processor.
+A few mnemonics are valid for all processors
+and are used to give directives to the assembled.
+These are known as "pseudo-mnemonics".
+
+.SS Labels
+
+Labels are identifiers representing
+.br
+\(em an absolute address,
+.br
+\(em a relative address (position independent code),
+.br
+\(em a register,
+.br
+\(em a list of registers,
+.br 
+\(em a specific bit at a specific address,
+.br
+\(em or a mnemonic.
+.PP
+Most labels are composed of at most 36 alphanumeric characters,
+periods
+.BR "" "(" "." ")"
+or
+underscores
+.BR "" "(" "_" ")."
+Labels cannot start with a digit.  
+They are case insensitive.
+.PP
+Labels starting with a period
+.BR "" "(" "." ")"
+are local labels whose scope is either limited
+to the macro in which they are defined,
+or to the code segment delimited by the pseudo-mnemonics
+.B CODE
+or
+.BR DUMMY .
+.PP
+The predefined "star" label 
+.BR "" "(" "*" ")"
+represents the current program counter,
+that is to say, the address where the next
+assembly code instruction will be encoded.
+Other predefined labels include all pseudo-mnemonics, 
+micro-processor specific mnemonics and 
+register names.
+
+
+.SS Constants
+
+The assembled recognizes numerical constants
+expressed in decimal, hexadecimal, octal,
+binary, or ascii.
+.PP
+.TS
+center,box;
+lfB lfB lfB
+l l l 
+l l l 
+l l l 
+l l l 
+l l l 
+l l l 
+l l l 
+l l l
+l l l
+.
+Type	Format	Examples
+=
+decimal	\fIdddd	\fB1234\fR,\fB 675\fR,\fB 12\fR,\fB 1\fR, but not \fB0.12\fR.
+=
+hexadecimal	\fB$\fIdddd	\fB$fd12\fR,\fB $2AC\fR,\fB $0\fR.
+	\fIdddd\fBH\fR	\fB03H\fR,\fB 2da7H\fR,\fB 0FC84H\fR, but not \fBFC84H\fR.
+	\fB0X\fIdddd	\fB0x03\fR,\fB 0x2AC\fR,\fB 0Xfc84\fR.
+=
+octal	\fIdddd\fBQ\fR	\fB377Q\fR,\fB 012412Q\fR.
+=
+binary	\fB%\fIdddd	\fB%01110110\fR,\fB %1100\fR.
+	\fIdddd\fBB\fR	\fB01110110B\fR,\fB 1100B\fR.
+	\fB0B\fIdddd	\fB0b1100\fR
+=
+ascii	\fB'\fIcccc\fB'\fR	\fB'a'\fR,\fB 'AB'\fR,\fB '"'\fR,\fB '\\n'\fR,\fB '\\''\fR.
+	\fB"\fIcccc\fB"\fR	\fB"\\t"\fR,\fB "\\""\fR,\fB "a'b"\fR.
+.TE
+.PP
+
+.SS Expressions
+
+Like labels, expressions can represent an absolute address
+.RI ( abs ),
+a relative address for position independent code
+.RI ( rel ),
+a register
+.RI ( reg ),
+or a list of registers
+.RI ( reglist ),
+or a reference to a specific bit at a specific address.
+
+The following operators are recognized on expressions.
+.TS
+center,box;
+lfB lfB lfB
+l l l 
+l l l 
+l l l 
+l l l 
+l l l 
+l l l 
+l l l 
+l l l 
+l l l 
+l l l 
+l l l 
+l l l 
+l l l 
+l l l 
+l l l 
+l l l 
+.
+Syntax	Result	Description
+=
+ \fIabs\fB{\fIabs\fB}\fR	\fIbspec\fR	bit reference, e.g. \fBpia{3}\fR
+ \fBADDR(\fIabs\fB)\fR	\fIabs\fR	address from a bit reference
+ \fBBIT(\fIabs\fB)\fR	\fIabs\fR	bit number from a bit reference
+=
+ \fB- \fIabs	\fIabs\fR	two's complement
+ \fB~ \fIabs	\fIabs\fR	one's complement
+=
+ \fIabs\fB << \fIabs\fR	\fIabs\fR	left shift
+ \fIabs\fB >> \fIabs\fR	\fIabs\fR	right shift
+=
+ \fIabs\fB | \fIabs\fR	\fIabs\fR	bitwise or
+ \fIabs\fB & \fIabs\fR	\fIabs\fR	bitwise and
+ \fIabs\fB ^ \fIabs\fR	\fIabs\fR	bitwise xor
+=
+ \fIabs\fB * \fIabs\fR	\fIabs\fR	multiplication
+ \fIabs\fB * \fIabs\fR	\fIabs\fR	division
+=
+ \fIabs\fB + \fIabs\fR	\fIabs\fR	addition
+ \fIrel\fB + \fIabs\fR	\fIrel\fR	addition
+ \fIabs\fB - \fIabs\fR	\fIabs\fR	subtraction
+ \fIrel\fB - \fIabs\fR	\fIrel\fR	subtraction
+ \fIrel\fB - \fIrel\fR	\fIabs\fR	subtraction
+=
+ \fIreg\fB - \fIreg\fR	\fIreglist\fR	register range
+ \fIreglist\fB \\ \fIreg\fR	\fIreglist\fR	register list
+.TE
+.PP
+The table lists operators in order of decreasing precedence.
+Parenthesis can be used to avoid ambiguities.
+A warning is generated when an entire expression is surrounded
+with parenthesis and can be confused with a micro-processor addressing mode.
+.PP
+Examples:
+.IP ""
+\fB (base+$12) >> 8 & 0xff00 \fR
+.br
+\fB 'A'-80H \fR
+.br
+\fB (base+0x12) fR
+.PP
+The last example causes a warning because the parenthesis
+were not necessary and might suggest a micro-processor 
+addressing mode.
+.PP
+All arithmetic expressions are evaluated on 32 bits.
+Arithmetic operations overflow silently.
+The arithmetic values are then truncated to the
+size implied by the micro-processor mnemonic.
+This truncation might cause a warning message.
+
+Examples:
+all the following instructions
+.IP ""
+(6502)	\fBlda #$1234\fR
+.br
+(6800)	\fBldaa $1234,x\fR
+.br
+(Z80)	\fBld (ix+0C2H),b\fR
+.PP
+cause a warning
+.IP ""
+.B >>> WARNING: Operand overflow
+.PP
+However expression
+.IP ""
+.B $1123454 * 1298992
+.PP
+overflows silently.
+
+.SS Pseudo-mnemonics
+
+The following pseudo-mnemonics are always recognized.
+
+.PP
+.BI "CPU " cpuname
+.in +7n
+Indicates the selected micro-processor type.
+This must appear before anu micro-processor specific instruction.
+The possible values of 
+.I cpuname
+are listed when you invoke
+.B crasm
+without arguments.
+The current list includes
+.BR 6800, 
+.BR 6801, 
+.BR 6803, 
+.BR 6502, 
+.BR 65C02, 
+and
+.BR Z80
+.in -7n
+.PP
+.BI "OUTPUT " binformat
+.in +7n
+Indicates the format of the output file.
+Argument 
+.I binformat
+can take values
+.B SCODE
+for producing an output file using Motorola's S code, or
+.B HEX
+for Intel's Hex format.
+The default depends on the selected micro-processor.
+.in -7n
+.PP
+.BI CODE
+.in +7n
+Delimit the scope of local labels
+and introduce a program section.
+.TP
+.BI DUMMY
+Delimit the scope of local labels
+and introduce a fake program section
+whose sole effect is to define labels
+without generating code.
+.in -7n
+.PP
+.BI "" label " EQU " expression 
+.br
+.BI "" label " = " expression
+.in +7n
+Define the value of label
+.IR label .
+Labels defined using these directives
+can be redefined later in the program.
+.in -7n
+.PP
+.BI "[" label "] DB " expression "[,...," expression "]"
+.in +7n
+Insert the specified data bytes (8 bits).
+.in -7n
+.PP
+.BI "[" label "] DW " expression "[,...," expression "]"
+.in +7n
+Insert the specified data words (16 bits).
+The byte ordering depends on the selected micro-processor.
+.in -7n
+.PP
+.BI "[" label "] DL " expression "[,...," expression "]"
+.in +7n
+Insert the specified data longs (32 bits).
+The byte ordering depends on the selected micro-processor.
+.in -7n
+.PP
+.BI "[" label "] DDB " expression "[,...," expression "]"
+.in +7n
+Insert the specified double bytes (16 bits).
+The byte ordering is the opposite of the usual
+byte ordering for the selected micro-processor.
+.in -7n
+.PP
+.BI "[" label "] ASC " stringconstant
+.in +7n
+Insert the ascii representation of the string
+.I stringconstant .
+The string must be delimited by double quotes.
+The C escape sequences \fB\\r\fR, \fB\\n\fR, \fB\\t\fR, 
+\fB\\0\fR, \fB\\'\fR, \fB\\"\fR, 
+and \fB\\\\\fR are recognized.
+.in -7n
+.PP
+.BI "[" label "] ASC " countexpr ",[" valexpr "]"
+.in +7n
+Insere
+.I countexpr
+bytes with value
+.IR valexpr .	
+The default value is zero.
+.in -7n
+.PP
+.BI "[" label "] ALIGN EVEN"
+.br
+.BI "[" label "] ALIGN ODD"
+.in +7n
+Insert a null byte in order to make the program counter even or odd.
+.in -7n
+.PP
+.BI "IF " condexpr
+.br
+ ...
+.br
+.BI "ELSE"
+.br
+ ...
+.br
+.BI "ENDC"
+.in +7n
+Conditional assembly:
+If expression
+.I condexpr
+is non zero, 
+process the lines located between the
+.B IF
+and the
+.BR ELSE 
+pseudo-mnemonics.
+Otherwise process the lines located between the
+.B ELSE
+and the
+.BR ENDC
+pseudo-mnemonics.
+Conditional assembly instructions can be nested. The 
+.B ELSE 
+part can be omitted.
+.in -7n
+.PP
+.BI "" "label" " MACRO"
+.br
+        ...
+.br
+.BI "      ENDM"
+.br
+.in +7n
+Define a new mnemonic 
+.I label
+equivalent to all the instructions located
+between the 
+.B MACRO
+and
+.B ENDM
+pseudo-mnemonics.
+Invocations of the macro can specify a list of comma 
+separated operands.  The character sequences 
+\fB\\1\fR, \fB\\2\fR, ... \fB\\\fIN\fR
+in the macro definition are replaced by the supplied operands.
+The character sequence \fB\\0\fR is replaced by the number
+of supplied operands.
+.in -7n
+.PP
+.BI "EXITM"
+.in +7n
+This pseudo mnemonic can be used inside a macro definition
+to exit the macro.  This is useful in conjunction with
+the conditional assembly pseudo-mnemonics.
+.in -7n
+.PP
+.BI "INCLUDE " filename
+.in +7n
+Force the assembler to process file named
+.I filename
+at the current point.
+.in -7n
+.PP
+.BR "LIST ON"
+.br
+.BR "LIST OFF"
+.in +7n
+Enable or disable the production of a listing
+(default is on.)
+.in -7n
+.PP
+.BR "CLIST ON"
+.br
+.BR "CLIST OFF"
+.in +7n
+Enable or disable the production of a listing
+for the non active branches of a conditional assembly
+construct (default is on.)
+.in -7n
+.PP
+.BR "ILIST ON"
+.br
+.BR "ILIST OFF"
+.in +7n
+Enable or disable the production of a listing
+for included files (default is off.)
+.in -7n
+.PP
+.BR "MLIST ON"
+.br
+.BR "MLIST OFF"
+.in +7n
+Enable or disable the production of a listing
+for the macro expansions (default is off.)
+.in -7n
+.PP
+.BR "NAM " title
+.in +7n
+Provide name
+.I title
+for the header of the listing pages.
+.in -7n
+.PP
+.BR "PAGE"
+.in +7n
+Start a new listing page.
+.in -7n
+.PP
+.BR "PAGE " columns "," rows
+.in +7n
+Specify the size of a listing page.
+.in -7n
+.PP
+.BR "SKIP " number
+.in +7n
+Skip
+.I number
+lines.
+.in -7n
+.PP
+.BR "FAIL " message
+.in +7n
+Generate an error message
+.IR message .
+.in -7n
+.PP
+
+.SH EXAMPLE
+
+.PP
+Here is a small 6502 program:
+.IP "" 2
+\fB
+     cpu 6502
+.br
+ cout = $fded ; display a character
+.br
+    * = $300  ; assemble at $300
+.br
+      code
+.br
+ pstring  ldy #0
+.br
+ .1       lda message,y
+.br
+          beq .2
+.br
+          jsr cout
+.br
+          iny          
+.br
+ .2       bne .1
+.br
+          rts
+.br
+ message  asc "This is the message\0"
+.br
+      code       
+\fR
+.PP    
+
+.SH CREDITS
+
+Leon Bottou, September 1987.
+

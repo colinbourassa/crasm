@@ -1,0 +1,7 @@
+;
+;  test de INCLUDE
+;
+	ilist on
+	include testfiles/tstmacros.crasm
+	ilist off
+	include testfiles/tstif.crasm
