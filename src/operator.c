@@ -1,4 +1,4 @@
-/*  Copyright (c) 1987 Leon Bottou
+/*  Copyright (C) 1987- Leon Bottou
  * 
  *  This is free documentation; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
