@@ -106,8 +106,8 @@ static struct addmodes { char *filter;
 
 static unsigned char offsettable[][16]= {
 /*
-(.,x)     (.),y     (.)       .,x       .,y         .       #.        _
-    (..,x)    (..),y     (..)      ..,x      ..,y      ..        #..       A
+(.,x)      (.),y     (.)       .,x       .,y         .       #.        _
+      (..,x)    (..),y    (..)      ..,x      ..,y      ..        #..       A
 */
 {0x01,0x00,0x11,0x00,0x12,0x00,0x15,0x1d,0x00,0x19,0x05,0x0d,0x09,0x00,0x00,0x00,},
 {0x00,0x00,0x00,0x00,0x00,0x00,0x16,0x1e,0x16,0x1e,0x06,0x0e,0x02,0x00,0x00,0x0a,},
@@ -225,13 +225,12 @@ mnemo	("bvs",		branch, 	0x70)
 mnemo	("bcc",		branch, 	0x90)
 mnemo	("bcs",		branch, 	0xb0)
 mnemo	("bne",		branch, 	0xd0)
-mnemo	("beq",		branch, 	0xe0)
+mnemo	("beq",		branch, 	0xf0)
 						/* pseudos branchs */
 mnemo	("bhi",		branch, 	0xb0)   /* A>=M unsigned */
 mnemo	("blo",		branch, 	0x90)	/* A< M unsigned */ 
 mnemo	("bgt",		branch,		0x10)   /* A>=M signed	 */
 mnemo	("ble",		branch,		0x30)	/* A< M signed	 */
-
 
 mnemo	("nop",		single,		0xea)	/* single byte instructions   */
 mnemo	("brk",		single,		0x00)
