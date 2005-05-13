@@ -1,6 +1,6 @@
 Name: crasm
 Summary: Cross assembler for 6800/6801/6803/6502/65C02/Z80.
-Version: 1.3
+Version: 1.4
 Release: 1
 License: GPL
 Group: Applications/Internet
