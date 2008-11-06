@@ -274,8 +274,8 @@ mnemo2	("ror",		1,0x60	,F_noimm|F_noindy		)
 
 mnemo2	("ldx",		1,0xa0	,F_noacc|F_noindx		)
 mnemo2	("ldy",		1,0x9e	,F_noacc|F_noindy		)
-mnemo2	("cpx",		1,0xbe	,F_noindy|F_noindx|F_noacc	)
-mnemo2	("cpy",		1,0xde	,F_noindy|F_noindx|F_noacc	)
+mnemo2	("cpx",		1,0xde	,F_noindy|F_noindx|F_noacc	)
+mnemo2	("cpy",		1,0xbe	,F_noindy|F_noindx|F_noacc	)
 
 mnemo2	("stx",		2,0x80	,F_noindx			)
 mnemo2	("sty",		2,0x7e	,F_noindy			)
