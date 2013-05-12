@@ -1,0 +1,1 @@
+#define CRASMVERSION "1.6"

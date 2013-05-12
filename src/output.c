@@ -27,6 +27,7 @@
 
 
 #include "dcl.h"
+#include "version.h"
 #include <ctype.h>
 
 #define NMARGIN 21
@@ -87,7 +88,7 @@ outputraw(char *s)
 	if ( asmflags & F_LIST_ON )
 	{	if ( ppos==0 )
 		{	
-			printf("Crasm LYB 1.3:   %30s",title);
+			printf("Crasm LYB %s:   %30s",CRASMVERSION,title);
 			for ( i=58; i<llen; i++)
 				putchar(' ');
 			printf("page%3d\n\n",++pagenumber);

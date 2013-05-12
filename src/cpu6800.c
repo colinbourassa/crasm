@@ -105,7 +105,7 @@ codemode(int code, int add, int value)	        /* generate code, given	base  */
 	insert8(code+add);
 	if ( !add && 				/* 16 bits immediate	      */
 	     ( code==0x8c || code==0x8e || code==0xc3 ||
-	       code==0xcc || code==0xce || code==0x93    ) )
+	       code==0xcc || code==0xce || code==0x83    ) )
 		insert16(value);
 	else if (add==0x30)			/* extended		      */
 		insert16(value);
@@ -181,7 +181,7 @@ mnemo	("bgt",		branch, 	0x2e)
 mnemo	("ble",		branch, 	0x8f)
 
 mnemo	("nop",		single,		0x01)	/* single byte instructions   */
-mnemo	("rti",		single,		0x38)
+mnemo	("rti",		single,		0x3b)
 mnemo	("rts",		single,		0x39)
 mnemo	("swi",		single,		0x3f)
 mnemo	("wai",		single,		0x3e)
@@ -288,7 +288,7 @@ mnemo	("brn",		branch,		0x21)
 mnemo	("pulx",	single,		0x38)
 mnemo	("abx",		single,		0x3a)
 mnemo	("pshx",	single,		0x3c)
-mnemo	("mul",		single,		0x04)
+mnemo	("mul",		single,		0x3d)
 
 mnemo	("subd",	standard,	0x83)
 mnemo	("addd",	standard,	0xc3)
