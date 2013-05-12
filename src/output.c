@@ -88,7 +88,7 @@ outputraw(char *s)
 	if ( asmflags & F_LIST_ON )
 	{	if ( ppos==0 )
 		{	
-			printf("Crasm LYB %s:   %30s",CRASMVERSION,title);
+			printf("Crasm %s:   %30s",CRASMVERSION,title);
 			for ( i=58; i<llen; i++)
 				putchar(' ');
 			printf("page%3d\n\n",++pagenumber);
