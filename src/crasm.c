@@ -26,6 +26,7 @@
 */
 
 #include "dcl.h"
+#include "version.h"
 #include "label.h"
 
 #define SCODE 1
@@ -462,7 +463,7 @@ syntax(char *s)
 	a=NULL;
 	printf ("%s\n",s);
 	printf ("Syntax:  crasm [-slx] [-o SCODEFILE] INPUTFILE\n");
- 	printf ("known CPUs :");
+ 	printf ("Crasm %s known CPUs:",CRASMVERSION);
 	for ( q=cpulist; q->name ; q++ )
 	{	if (a!=q->init)
 			printf("\n\t");
