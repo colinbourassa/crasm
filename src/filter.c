@@ -52,7 +52,7 @@ zerobuffer(void)
 */
 
 int
-filter(register char *s, register char *fil, ...)
+filter(char *s, char *fil, ...)
 {
         va_list ap;
 	register char *starts, *startf;

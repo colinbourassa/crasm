@@ -199,7 +199,7 @@ int
 Xcode(int modifier, char *label, char *mnemo, char *oper)
 {
 	if (oper && *oper )
-		error("no operand for DUMMY pseudo");
+		error("no operand for CODE pseudo");
 	segment=++thiscall;
 	asmflags |= F_CODE_ON;
         return 0;
@@ -209,7 +209,7 @@ int
 Xdummy(int modifier, char *label, char *mnemo, char *oper)
 {
 	if (oper && *oper )
-		error("no operand for CODE pseudo");
+		error("no operand for DUMMY pseudo");
 	segment=++thiscall;
 	asmflags &= ~ F_CODE_ON;
         return 0;
