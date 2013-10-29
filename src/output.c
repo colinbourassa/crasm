@@ -137,7 +137,7 @@ outputcar(char c)
 	char **pat;
 	
 	
-	if ( !isspace(c) )
+	if ( !isspace((unsigned char)c) )
 	{	if ( lpos>=llen )
 		{	outputEOL();
 			if ( filter(linebuffer+LMARGIN,"?;_?",&dummy,&dummy))
