@@ -45,6 +45,7 @@
 
 static int lastoffset;
 
+extern unsigned int chars_consumed_by_filter;
 char linebuffer[256];
 char title[31] ="";
 int pagenumber = 0;
@@ -136,13 +137,12 @@ outputcar(char c)
 	char *dummy;
 	char **pat;
 	
-	
 	if ( !isspace((unsigned char)c) )
 	{	if ( lpos>=llen )
 		{	outputEOL();
 			if ( filter(linebuffer+LMARGIN,"?;_?",&dummy,&dummy))
 				/* suite de commentaire */
-				position( dummy-linebuffer );
+				position( chars_consumed_by_filter );
 			else if ( c==';' )
 				/* debut de commentaire */
 				position ( LMARGIN );
@@ -154,7 +154,7 @@ outputcar(char c)
 				{	if ( filter( linebuffer+LMARGIN,
 						     *pat,
 			        	  	     &dummy,&dummy,&dummy) )
-					{	position( dummy-linebuffer );
+					{	position( chars_consumed_by_filter );
 						break;
 					};
 				};

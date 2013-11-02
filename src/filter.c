@@ -33,6 +33,7 @@
 
 char *bufferpos;
 char buffer[4000];
+unsigned int chars_consumed_by_filter;
 
 /* zerobuffer()
    Efface les buffers de tous les filter(s,f) precedents
@@ -58,7 +59,8 @@ filter(char *s, char *fil, ...)
 	register char *starts, *startf;
 	register int quote;
 	char *oldbufferpos;
-	
+	char *str_start = s;
+
 	oldbufferpos=bufferpos;
 	startf=starts= NULL;
 	va_start(ap, fil);
@@ -69,6 +71,7 @@ filter(char *s, char *fil, ...)
 		{	char **strptr = va_arg(ap, char**);
                         *bufferpos = 0;
                         *strptr = ++bufferpos;
+						chars_consumed_by_filter = (s - str_start);
 			if (fil[1]==0)
 			{	
                                 while (*s) { *bufferpos++ = *s++; }
