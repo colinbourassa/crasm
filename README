@@ -2,6 +2,8 @@ CRASM is a portable cross-assembler for the 6800, 6801, 6803, 6502, 65C02, and Z
 
 Changelog:
 
+1.7: Cast parameter to isspace() to workaround Windows limitation
+
 1.6: Fixed mishandled SUBD immediate (6801/6803)
      Fixed incorrect opcodes for MUL and RTI (6801/6803)
      Fixed documentation for DS pseudo
