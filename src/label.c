@@ -35,7 +35,7 @@
 struct labelarray
 {	int position;
 	struct label label[LABELARRAYSIZE];
-} *labelarray = NULL;
+} *labelarray_inst = NULL;
 
 struct label *lroot = NULL;
 
@@ -120,15 +120,15 @@ makelabel(char *name, unsigned char flags, unsigned char type)
 	if ( q != NULL )
 		fatal("XX: makelabel");
 	
-	if (labelarray==NULL)
-	{	if ((labelarray=malloc(sizeof *labelarray)))
-			labelarray->position=0;
+	if (labelarray_inst==NULL)
+	{	if ((labelarray_inst=malloc(sizeof *labelarray_inst)))
+			memset(labelarray_inst, 0, sizeof(*labelarray_inst));
 		else
 			fatal("no memory");
 	}
-	q= &( labelarray->label[ labelarray->position++ ] ); 
-	if ( labelarray->position >= LABELARRAYSIZE )
-		labelarray=NULL;
+	q= &( labelarray_inst->label[ labelarray_inst->position++ ] ); 
+	if ( labelarray_inst->position >= LABELARRAYSIZE )
+		labelarray_inst=NULL;
 	
 	q->left=q->right=NULL;
 
