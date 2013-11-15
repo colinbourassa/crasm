@@ -1,1 +1,1 @@
-#define CRASMVERSION "1.7"
+#define CRASMVERSION "1.8"
