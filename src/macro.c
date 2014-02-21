@@ -376,24 +376,27 @@ linegets(char *buffer, int length)
 	{
 		register char *s1,*s2;
 		buffer[0] = 0;
-		fgets(buffer,length,source[slevel].filedesc.file);
-		s1=s2=buffer;
-		while ( *s1 && *s1!='\n' && s1-buffer<length )
-                  {	if ( *s1=='\t' || isprint((unsigned char)*s1) 
-                             || !isascii((unsigned char)*s1) )
-				*s2++=*s1;
-			s1++;
-		}
-		*s2=0;
-		if ( s1!=s2 )
-			warning("Unprintable characters removed");
-		linenumber++;
-                if ( (linenumber & 7)==1 && passnumber==1) {
-                    fprintf(stderr,"%d    \r",linenumber);
-                    fflush(stderr);
-                }
-		if ( feof( source[slevel].filedesc.file ) )
-			source[slevel].type = S_END;
+        if (fgets(buffer,length,source[slevel].filedesc.file) != NULL)
+        {
+            s1=s2=buffer;
+            while ( *s1 && *s1!='\n' && s1-buffer<length )
+            {
+                if ( *s1=='\t' || isprint((unsigned char)*s1) 
+                               || !isascii((unsigned char)*s1) )
+                    *s2++=*s1;
+                s1++;
+            }
+		    *s2=0;
+            if ( s1!=s2 )
+                warning("Unprintable characters removed");
+            linenumber++;
+            if ( (linenumber & 7)==1 && passnumber==1) {
+                fprintf(stderr,"%d    \r",linenumber);
+                fflush(stderr);
+            }
+		    if ( feof( source[slevel].filedesc.file ) )
+                source[slevel].type = S_END;
+        }
 	}
 	else
 	{
