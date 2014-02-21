@@ -2,6 +2,9 @@ CRASM is a portable cross-assembler for the 6800, 6801, 6803, 6502, 65C02, and Z
 
 Changelog:
 
+1.8: Fixed incorrect 6800 opcode for BLE
+     Fixed compile warning regarding ignored return value from fgets()
+
 1.7: Fixed handling of extended ASCII characters in input files (Windows-specific)
      Fixed uninitialized memory in label array
        (was sometimes causing "too far branch" errors)
