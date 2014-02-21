@@ -178,7 +178,7 @@ mnemo	("bmi",		branch, 	0x2b)
 mnemo	("bge",		branch, 	0x2c)
 mnemo	("blt",		branch, 	0x2d)
 mnemo	("bgt",		branch, 	0x2e)
-mnemo	("ble",		branch, 	0x8f)
+mnemo	("ble",		branch, 	0x2f)
 
 mnemo	("nop",		single,		0x01)	/* single byte instructions   */
 mnemo	("rti",		single,		0x3b)
