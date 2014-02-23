@@ -124,7 +124,7 @@ extern void position(int n);
 extern void outputEOL(void);
 extern void outputline(void);
 extern void outputbyte(int b);
-extern void outputaddr(long int a);
+extern void outputaddr(unsigned long a);
 extern char hexa[];
 
 

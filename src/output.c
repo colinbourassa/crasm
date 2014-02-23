@@ -232,13 +232,13 @@ outputline(void)
 /* special output */
 
 char hexa[] = "0123456789ABCDEF";
-extern long pc;
+extern unsigned long pc;
 
 void
 outputbyte(int b)
 {
 	char buffer[3];
-	static int mypc;
+	static unsigned long mypc;
 
 	if ( advance>20 && lpos>NMARGIN-5 )
 	{	if ( lpos <= NMARGIN-3 )
@@ -260,7 +260,7 @@ outputbyte(int b)
 }
 
 void
-outputaddr(long int a)
+outputaddr(unsigned long a)
 {
 	char buffer[20];
 	register int i;

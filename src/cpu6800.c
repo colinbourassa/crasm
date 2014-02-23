@@ -30,7 +30,7 @@ branch(int code, char *label, char *mnemo, char *oper) /* relative branchs */
 {
 	byte d;
 	int  dd;
-	extern long pc;
+	extern unsigned long pc;
 	struct result *r;
 	
 	r=parse(oper);				/* operand search 	     */
