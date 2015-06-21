@@ -1,0 +1,579 @@
+<HTML><HEAD><TITLE>Manpage of CRASM</TITLE>
+</HEAD><BODY>
+<H1>CRASM</H1>
+Cross assembler for 6800/6801/6803/6502/65C02/Z80.
+<p>
+<font face=arial,helvetica>
+<a href="http://sourceforge.net"><img align=center
+src="http://sourceforge.net/sflogo.php?group_id=116718&amp;type=5" 
+width="125" height="37" border="0" alt="SourceForge.net Logo" /></a>
+&nbsp;
+<a href="http://sourceforge.net/projects/crasm">Summary</a>
+&nbsp;
+<a href="http://sourceforge.net/project/showfiles.php?group_id=116718">Download</a>
+&nbsp;
+<a href="http://cvs.sourceforge.net/viewcvs.py/crasm/crasm/test">Examples</a>
+</font>
+<HR>
+
+<A NAME="lbAC">&nbsp;</A>
+<H2>SYNOPSIS</H2>
+
+<B>crasm [-o </B><I>codefile</I><B>] [-slx] </B><I>asmfile</I>
+
+<P>
+Assemble the microprocessor program 
+<I>asmfile </I>
+and produce output file 
+<I>codefile</I>
+in Intel HEX or Motorola S Code format.
+A program listing and a symbol table are also produced
+on the standard output.
+The current version of
+<B>crasm</B>
+
+can assemble programs for the 
+<B>6800,</B>
+<B>6801,</B>
+<B>6803,</B>
+<B>6502,</B>
+<B>65C02,</B>
+and
+<B>Z80</B>
+processors.
+The full list is printed when you invoke
+<B>crasm</B>
+without arguments.
+<P>
+<A NAME="lbAD">&nbsp;</A>
+<H2>OPTIONS</H2>
+<DL COMPACT>
+<DT><B>-o </B><I>codefile</I>
+<DD>
+Specify the name of the output file.
+No output file is produced without this option.
+<DT><B>-s</B>
+<DD>
+Disable warnings.
+<DT><B>-l</B>
+<DD>
+Disable program listing output.
+<DT><B>-x</B>
+<DD>
+Disable symbol table output.
+</DL>
+<P>
+<P>
+<P>
+<A NAME="lbAE">&nbsp;</A>
+<H2>SYNTAX</H2>
+<P>
+Each line of the assembly program
+should follow one of the following templates,
+where the brackets delimit optional parts.
+<DL COMPACT>
+<DT><DD>
+<B>[;</B><I>comment</I><B>]</B>
+<BR>
+<B></B><I>label</I><B> = </B><I>expression</I><B> [;</B><I>comment</I><B>]</B>
+<BR>
+<B>[</B><I>label</I><B>] </B><I>mnemonic</I><B> </B><I>operand</I><B> [;</B><I>comment</I><B>]</B>
+</DL>
+<P>
+Comments are introduced by a semicolon 
+<B></B>(<B>;</B>)
+and extend to the end of the line.
+Labels are identifiers containing up to 36 alphanumeric 
+characters (including period and underscore). Labels
+cannot start with a digit.
+The format of the mnemonics and operands 
+field depends on the selected micro-processor.
+A few mnemonics are valid for all processors
+and are used to give directives to the assembled.
+These are known as &quot;pseudo-mnemonics&quot;.
+<P>
+<A NAME="lbAF">&nbsp;</A>
+<H3>Labels</H3>
+<P>
+Labels are identifiers representing
+<BR>
+- an absolute address,
+<BR>
+- a relative address (position independent code),
+<BR>
+- a register,
+<BR>
+- a list of registers,
+<BR>
+- a specific bit at a specific address,
+<BR>
+- or a mnemonic.
+<P>
+Most labels are composed of at most 36 alphanumeric characters,
+periods
+<B></B>(<B>.</B>)
+or
+underscores
+<B></B>(<B>_</B>).
+Labels cannot start with a digit.  
+They are case insensitive.
+<P>
+Labels starting with a period
+<B></B>(<B>.</B>)
+are local labels whose scope is either limited
+to the macro in which they are defined,
+or to the code segment delimited by the pseudo-mnemonics
+<B>CODE</B>
+or
+<B>DUMMY</B>.
+<P>
+The predefined &quot;star&quot; label 
+<B></B>(<B>*</B>)
+represents the current program counter,
+that is to say, the address where the next
+assembly code instruction will be encoded.
+Other predefined labels include all pseudo-mnemonics, 
+micro-processor specific mnemonics and 
+register names.
+<P>
+<P>
+<A NAME="lbAG">&nbsp;</A>
+<H3>Constants</H3>
+<P>
+The assembled recognizes numerical constants
+expressed in decimal, hexadecimal, octal,
+binary, or ascii.
+<P>
+<CENTER><TABLE BORDER CELLPADDING=5>
+<TR VALIGN=top><TD ALIGN=CENTER><B>Type</B></TD><TD ALIGN=CENTER><B>Format</B></TD><TD ALIGN=CENTER><B>Examples</B><BR></TD></TR>
+<TR VALIGN=top><TD>decimal</TD><TD><I>dddd</I></TD><TD><B>1234</B>,<B> 675</B>,<B> 12</B>,<B> 1</B>, but not <B>0.12</B>.<BR></TD></TR>
+<TR VALIGN=top><TD>hexadecimal</TD><TD><B>$</B><I>dddd</I></TD><TD><B>$fd12</B>,<B> $2AC</B>,<B> $0</B>.<BR></TD></TR>
+<TR VALIGN=top><TD></TD><TD><I>dddd</I><B>H</B></TD><TD><B>03H</B>,<B> 2da7H</B>,<B> 0FC84H</B>, but not <B>FC84H</B>.<BR></TD></TR>
+<TR VALIGN=top><TD></TD><TD><B>0X</B><I>dddd</I></TD><TD><B>0x03</B>,<B> 0x2AC</B>,<B> 0Xfc84</B>.<BR></TD></TR>
+<TR VALIGN=top><TD>octal</TD><TD><I>dddd</I><B>Q</B></TD><TD><B>377Q</B>,<B> 012412Q</B>.<BR></TD></TR>
+<TR VALIGN=top><TD>binary</TD><TD><B>%</B><I>dddd</I></TD><TD><B>%01110110</B>,<B> %1100</B>.<BR></TD></TR>
+<TR VALIGN=top><TD></TD><TD><I>dddd</I><B>B</B></TD><TD><B>01110110B</B>,<B> 1100B</B>.<BR></TD></TR>
+<TR VALIGN=top><TD></TD><TD><B>0B</B><I>dddd</I></TD><TD><B>0b1100</B><BR></TD></TR>
+<TR VALIGN=top><TD>ascii</TD><TD><B>'</B><I>cccc</I><B>'</B></TD><TD><B>'a'</B>,<B> 'AB'</B>,<B> '&quot;'</B>,<B> '\n'</B>,<B> '\''</B>.<BR></TD></TR>
+<TR VALIGN=top><TD></TD><TD><B>"</B><I>cccc</I><B>"</B></TD><TD><B>"a"</B>,<B> "AB"</B>,<B> "'"</B>,<B> "\n"</B>,<B> "\&quot;"</B>.<BR></TD></TR>
+</TABLE></CENTER>
+<P>
+<P>
+<A NAME="lbAH">&nbsp;</A>
+<H3>Expressions</H3>
+<P>
+Like labels, expressions can represent an absolute address
+(<I>abs</I>),
+a relative address for position independent code
+(<I>rel</I>),
+a register
+(<I>reg</I>),
+or a list of registers
+(<I>reglist</I>),
+or a reference to a specific bit at a specific address
+(<I>bspec</I>).
+<P>
+The following operators are recognized on expressions.
+<CENTER><TABLE BORDER CELLPADDING=5>
+<TR VALIGN=top><TD ALIGN=CENTER><B>Syntax</B></TD><TD ALIGN=CENTER><B>Result</B></TD><TD ALIGN=CENTER><B>Description</B></TD></TR>
+<TR VALIGN=top><TD><I>abs</I><B>{</B><I>abs</I><B>}</B></TD><TD><I>bspec</I></TD><TD>bit reference, e.g. <B>pia{3}</B></TD></TR>
+<TR VALIGN=top><TD><B>ADDR(</B><I>abs</I><B>)</B></TD><TD><I>abs</I></TD><TD>address from a bit reference</TD></TR>
+<TR VALIGN=top><TD><B>BIT(</B><I>abs</I><B>)</B></TD><TD><I>abs</I></TD><TD>bit number from a bit reference</TD></TR>
+<TR VALIGN=top><TD><B>-&nbsp;</B><I>abs</I></TD><TD><I>abs</I></TD><TD>two's complement</TD></TR>
+<TR VALIGN=top><TD><B>~&nbsp;</B><I>abs</I></TD><TD><I>abs</I></TD><TD>one's complement</TD></TR>
+<TR VALIGN=top><TD><I>abs</I><B>&nbsp;&lt;&lt;&nbsp;</B><I>abs</I></TD><TD><I>abs</I></TD><TD>left shift</TD></TR>
+<TR VALIGN=top><TD><I>abs</I><B>&nbsp;&gt;&gt;&nbsp;</B><I>abs</I></TD><TD><I>abs</I></TD><TD>right shift</TD></TR>
+<TR VALIGN=top><TD><I>abs</I><B>&nbsp;|&nbsp;</B><I>abs</I></TD><TD><I>abs</I></TD><TD>bitwise or</TD></TR>
+<TR VALIGN=top><TD><I>abs</I><B>&nbsp;&amp;&nbsp;</B><I>abs</I></TD><TD><I>abs</I></TD><TD>bitwise and</TD></TR>
+<TR VALIGN=top><TD><I>abs</I><B>&nbsp;^&nbsp;</B><I>abs</I></TD><TD><I>abs</I></TD><TD>bitwise xor</TD></TR>
+<TR VALIGN=top><TD><I>abs</I><B>&nbsp;*&nbsp;</B><I>abs</I></TD><TD><I>abs</I></TD><TD>multiplication</TD></TR>
+<TR VALIGN=top><TD><I>abs</I><B>&nbsp;*&nbsp;</B><I>abs</I></TD><TD><I>abs</I></TD><TD>division</TD></TR>
+<TR VALIGN=top><TD><I>abs</I><B>&nbsp;+&nbsp;</B><I>abs</I></TD><TD><I>abs</I></TD><TD>addition</TD></TR>
+<TR VALIGN=top><TD><I>rel</I><B>&nbsp;+&nbsp;</B><I>abs</I></TD><TD><I>rel</I></TD><TD>addition</TD></TR>
+<TR VALIGN=top><TD><I>abs</I><B>&nbsp;-&nbsp;</B><I>abs</I></TD><TD><I>abs</I></TD><TD>subtraction</TD></TR>
+<TR VALIGN=top><TD><I>rel</I><B>&nbsp;-&nbsp;</B><I>abs</I></TD><TD><I>rel</I></TD><TD>subtraction</TD></TR>
+<TR VALIGN=top><TD><I>rel</I><B>&nbsp;-&nbsp;</B><I>rel</I></TD><TD><I>rel</I></TD><TD>subtraction</TD></TR>
+<TR VALIGN=top><TD><I>reg</I><B>&nbsp;-&nbsp;</B><I>reg</I></TD><TD><I>reglist</I></TD><TD>register range</TD></TR>
+<TR VALIGN=top><TD><I>reglist</I><B>&nbsp;\&nbsp;</B><I>reg</I></TD><TD><I>reglist</I></TD><TD>register list construction</TD></TR>
+</TABLE></CENTER>
+<P>
+The table lists operators in order of decreasing precedence.
+Parenthesis can be used to avoid ambiguities.
+A warning is generated when an entire expression is surrounded
+with parenthesis and can be confused with a micro-processor addressing mode.
+<P>
+Examples:
+<DL COMPACT>
+<DT><DD>
+<B> (base+$12) &gt;&gt; 8 &amp; 0xff00 </B>
+<BR>
+<B> 'A'-80H </B>
+<BR>
+<B> (base+0x12) 
+</DL>
+<P>
+The last example causes a warning because the parenthesis
+were not necessary and might suggest a micro-processor 
+addressing mode.
+<P>
+All arithmetic expressions are evaluated on 32 bits.
+Arithmetic operations overflow silently.
+The arithmetic values are then truncated to the
+size implied by the micro-processor mnemonic.
+This truncation might cause a warning message.
+<P>
+Examples:
+all the following instructions
+<DL COMPACT>
+<DT><DD>
+(6502)<TT>&nbsp;</TT><B>lda #$1234</B><BR>
+(6800)<TT>&nbsp;</TT><B>ldaa $1234,x</B><BR>
+(Z80)<TT>&nbsp;&nbsp;</TT><B>ld (ix+0C2H),b</B><BR>
+</DL>
+<P>
+cause a warning
+<DL COMPACT>
+<DT><DD>
+<B>&gt;&gt;&gt; WARNING: Operand overflow</B>
+</DL>
+<P>
+However expression
+<DL COMPACT>
+<DT><DD>
+<B>$1123454 * 1298992</B>
+</DL>
+<P>
+overflows silently.
+<P>
+<A NAME="lbAI">&nbsp;</A>
+<H3>Pseudo-mnemonics</H3>
+<P>
+The following pseudo-mnemonics are always recognized.
+<P>
+<P>
+<DL>
+<DT>
+<B>CPU </B><I>cpuname</I>
+</DT><DD>
+Indicates the selected micro-processor type.
+This must appear before anu micro-processor specific instruction.
+The possible values of 
+<I>cpuname</I>
+are listed when you invoke
+<B>crasm</B>
+without arguments.
+The current list includes
+<B>6800,</B>
+<B>6801,</B>
+<B>6803,</B>
+<B>6502,</B>
+<B>65C02,</B>
+and
+<B>Z80</B>
+<P>
+</DD><DT>
+<B>OUTPUT </B><I>binformat</I>
+</DT><DD>
+Indicates the format of the output file.
+Argument 
+<I>binformat</I>
+can take values
+<B>SCODE</B>
+for producing an output file using Motorola's S code, or
+<B>HEX</B>
+for Intel's Hex format.
+The default depends on the selected micro-processor.
+<P>
+</DD><DT>
+<B>CODE</B>
+</DT><DD>
+Delimit the scope of local labels
+and introduce a program section.
+<P>
+</DT><DD>
+</DD><DT>
+<B>DUMMY</B>
+</DT><DD>
+Delimit the scope of local labels
+and introduce a fake program section
+whose sole effect is to define labels
+without generating code.
+<P>
+</DD><DT>
+<B></B><I>label</I><B> EQU </B><I>expression</I>
+<BR>
+<B></B><I>label</I><B> = </B><I>expression</I>
+</DT><DD>
+Define the value of label
+<I>label</I>.
+Labels defined using these directives
+can be redefined later in the program.
+<P>
+</DD><DT>
+<B>[</B><I>label</I><B>] DB </B><I>expression</I><B>[,...,</B><I>expression</I><B>]</B>
+</DT><DD>
+Insert the specified data bytes (8 bits).
+<P>
+</DD><DT>
+<B>[</B><I>label</I><B>] DW </B><I>expression</I><B>[,...,</B><I>expression</I><B>]</B>
+</DT><DD>
+Insert the specified data words (16 bits).
+The byte ordering depends on the selected micro-processor.
+<P>
+</DD><DT>
+<B>[</B><I>label</I><B>] DL </B><I>expression</I><B>[,...,</B><I>expression</I><B>]</B>
+</DT><DD>
+Insert the specified data longs (32 bits).
+The byte ordering depends on the selected micro-processor.
+<P>
+</DD><DT>
+<B>[</B><I>label</I><B>] DDB </B><I>expression</I><B>[,...,</B><I>expression</I><B>]</B>
+</DT><DD>
+Insert the specified double bytes (16 bits).
+The byte ordering is the opposite of the usual
+byte ordering for the selected micro-processor.
+<P>
+</DD><DT>
+<B>[</B><I>label</I><B>] ASC </B><I>stringconstant</I>
+</DT><DD>
+Insert the ascii representation of the string
+<I>stringconstant .</I>
+The string must be delimited by double quotes.
+The C escape sequences <B>\r</B>, <B>\n</B>, <B>\t</B>, 
+<B>\0</B>, <B>\'</B>, <B>\&quot;</B>, 
+and <B>\\</B> are recognized.
+<P>
+</DD><DT>
+<B>[</B><I>label</I><B>] DS </B><I>countexpr</I><B>,[</B><I>valexpr</I><B>]</B>
+</DT><DD>
+Insere
+<I>countexpr</I>
+bytes with value
+<I>valexpr</I>.
+The default value is zero.
+<P>
+</DD><DT>
+<B>[</B><I>label</I><B>] ALIGN EVEN</B>
+<BR>
+<B>[</B><I>label</I><B>] ALIGN ODD</B>
+</DT><DD>
+Insert a null byte in order to make the program counter even or odd.
+<P>
+</DD><DT>
+<B>IF </B><I>condexpr</I><BR>
+&nbsp;...<BR>
+<B>ELSE</B><BR>
+&nbsp;...<BR>
+<B>ENDC</B>
+</DT><DD>
+Conditional assembly:
+If expression
+<I>condexpr</I>
+is non zero, 
+process the lines located between the
+<B>IF</B>
+and the
+<B>ELSE</B>
+pseudo-mnemonics.
+Otherwise process the lines located between the
+<B>ELSE</B>
+and the
+<B>ENDC</B>
+pseudo-mnemonics.
+Conditional assembly instructions can be nested. The 
+<B>ELSE </B>
+part can be omitted.
+<P>
+</DD><DT>
+<I>label</I>&nbsp;<B>MACRO</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<BR>
+<B>      ENDM</B>
+</DT><DD>
+Define a new mnemonic 
+<I>label</I>
+equivalent to all the instructions located
+between the 
+<B>MACRO</B>
+and
+<B>ENDM</B>
+pseudo-mnemonics.
+Invocations of the macro can specify a list of comma 
+separated operands.  The character sequences 
+<B>\1</B>, <B>\2</B>, ... <B>\</B><I>N</I>
+in the macro definition are replaced by the supplied operands.
+The character sequence <B>\0</B> is replaced by the number
+of supplied operands.
+<P>
+</DD><DT>
+<B>EXITM</B>
+</DT><DD>
+This pseudo mnemonic can be used inside a macro definition
+to exit the macro.  This is useful in conjunction with
+the conditional assembly pseudo-mnemonics.
+<P>
+</DD><DT>
+<B>INCLUDE </B><I>filename</I>
+</DT><DD>
+Force the assembler to process file named
+<I>filename</I>
+at the current point.
+<P>
+</DD><DT>
+<B>LIST ON</B>
+<BR>
+<B>LIST OFF</B>
+</DT><DD>
+Enable or disable the production of a listing
+(default is on.)
+<P>
+</DD><DT>
+<B>CLIST ON</B>
+<BR>
+<B>CLIST OFF</B>
+</DT><DD>
+Enable or disable the production of a listing
+for the non active branches of a conditional assembly
+construct (default is on.)
+<P>
+</DD><DT>
+<B>ILIST ON</B>
+<BR>
+<B>ILIST OFF</B>
+</DT><DD>
+Enable or disable the production of a listing
+for included files (default is off.)
+<P>
+</DD><DT>
+<B>MLIST ON</B>
+<BR>
+<B>MLIST OFF</B>
+</DT><DD>
+Enable or disable the production of a listing
+for the macro expansions (default is off.)
+<P>
+</DD><DT>
+<B>NAM </B>title
+</DT><DD>
+Provide name
+<I>title</I>
+for the header of the listing pages.
+<P>
+</DD><DT>
+<B>PAGE</B>
+</DT><DD>
+Start a new listing page.
+<P>
+</DD><DT>
+<B>PAGE </B>columns<B>,</B>rows
+</DT><DD>
+Specify the size of a listing page.
+<P>
+</DD><DT>
+<B>SKIP </B>number
+</DT><DD>
+Skip
+<I>number</I>
+lines.
+<P>
+</DD><DT>
+<B>FAIL </B>message
+</DT><DD>
+Generate an error message
+<I>message</I>.
+<P>
+</DD>
+</DL>
+<P>
+<A NAME="lbAJ">&nbsp;</A>
+<H2>EXAMPLE</H2>
+
+<P>
+<P>
+
+Here is a small 6502 program:
+<PRE>
+              cpu 6502
+          cout = $fded ; display a character
+             * = $300  ; assemble at $300
+               code
+          pstring  ldy #0
+          .1       lda message,y
+                   beq .2
+                   jsr cout
+                   iny
+          .2       bne .1
+                   rts
+          message  asc "This is the message "
+               code
+</PRE>
+<P>
+Assembling this program gives the following listing:
+<PRE>
+Crasm LYB 1.3:                                                   page  1
+
+                         1
+                         2              cpu 6502
+  FDED                   3            cout = $fded ; display a character
+  0300                   4               * = $300  ; assemble at $300
+                         5                 code
+0300 A000                6            pstring  ldy #0
+0302 B90E03              7            .1       lda message,y
+0305 E004                8                     beq .2
+0307 20EDFD              9                     jsr cout
+030A C8                 10                     iny
+030B D0F5               11            .2       bne .1
+030D 60                 12                     rts
+030E 54686973206973
+0315 20746865206D65
+031C 737361676500       13            message  asc "This is the message\0"
+                        14                 code
+                        15
+
+ERRORS:       0
+WARNINGS:     0
+
+Successful assembly...
+ Last address      321 (801)
+ Code length        44 (68)
+
+
+
+Crasm LYB 1.3:                                                   page  2
+
+ FDED   Abs COUT
+^030E   Abs MESSAGE
+?0300   Abs PSTRING
+</PRE>
+and the following S Code file:
+<PRE>
+S1130300A000B90E03E00420EDFDC8D0F5605468E8
+S1130310697320697320746865206D657373616700
+S1050320650072
+S9030000FC
+</PRE>
+
+<A NAME="lbAK">&nbsp;</A>
+<H2>CREDITS</H2>
+
+<P>
+Leon Bottou, September 1987.
+<P>
+<P>
+
+<HR>
+<A NAME="index">&nbsp;</A><H2>Index</H2>
+<DL>
+<DT><A HREF="#lbAC">SYNOPSIS</A><DD>
+<DT><A HREF="#lbAD">OPTIONS</A><DD>
+<DT><A HREF="#lbAE">SYNTAX</A><DD>
+<DL>
+<DT><A HREF="#lbAF">Labels</A><DD>
+<DT><A HREF="#lbAG">Constants</A><DD>
+<DT><A HREF="#lbAH">Expressions</A><DD>
+<DT><A HREF="#lbAI">Pseudo-mnemonics</A><DD>
+</DL>
+<DT><A HREF="#lbAJ">EXAMPLE</A><DD>
+<DT><A HREF="#lbAK">CREDITS</A><DD>
+</DL>
+</BODY>
+</HTML>
