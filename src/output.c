@@ -46,7 +46,7 @@
 static int lastoffset;
 
 extern unsigned int chars_consumed_by_filter;
-char linebuffer[256];
+char linebuffer[1000];
 char title[31] ="";
 int pagenumber = 0;
 
@@ -72,7 +72,7 @@ setpage(int xplen, int xllen)
 	if (flag)
 		warning ("page redefinition");
 
-	if (xplen>200 || (xplen && xplen<10) || xllen<39 || xllen>1000 )
+	if (xplen>200 || (xplen && xplen<10) || xllen<39 || xllen>sizeof(linebuffer) )
 		error ("illegal values");
 
 	plen=xplen;

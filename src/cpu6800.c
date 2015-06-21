@@ -84,7 +84,7 @@ findmode(char *oper, int *pvalue)    /* test operands	      */
 	address="0";
 	
 	for ( q=addmodes; q->filt ; q++ )
-		if ( filter(oper,q->filt,&address) )
+		if (oper && filter(oper,q->filt,&address) )
 		{	r=parse(address);
 			checktype(r,L_ABSOLUTE);
 			*pvalue=r->value;

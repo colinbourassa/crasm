@@ -2,6 +2,6 @@
 ;;; Public Domain.
 
 	ilist on
-	include testfiles/tstmacros.crasm
+	include tstmacros.crasm
 	ilist off
-	include testfiles/tstif.crasm
+	include tstif.crasm

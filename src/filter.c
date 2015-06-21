@@ -71,7 +71,7 @@ filter(char *s, char *fil, ...)
 		{	char **strptr = va_arg(ap, char**);
                         *bufferpos = 0;
                         *strptr = ++bufferpos;
-						chars_consumed_by_filter = (s - str_start);
+                        chars_consumed_by_filter = (s - str_start);
 			if (fil[1]==0)
 			{	
                                 while (*s) { *bufferpos++ = *s++; }

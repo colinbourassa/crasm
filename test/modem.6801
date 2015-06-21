@@ -29,6 +29,8 @@
 ; placee aux adresses $F000->$FFFF
 
 ; Declarations
+ 
+ page 0,132
 
  output scode
  cpu 6801
