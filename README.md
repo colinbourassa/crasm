@@ -2,6 +2,10 @@
 
 CRASM is a portable cross-assembler for the 6800, 6801, 6803, 6502, 65C02, and Z80.
 
+## Documentation
+
+See the file [crasm.html](/crasm.html).
+
 ## Changelog
 
    *  crasm-1.8:  
