@@ -1,18 +1,39 @@
 ;***********************************************************************
 ;
-;  MicroChess (c) 1996-2002 Peter Jennings, 
-;  mailto:peterj@benlo.com   
-;  http://www.benlo.com/microchess.html
+;  Kim-1 MicroChess (c) 1976-2005 Peter Jennings, www.benlo.com 
 ;
 ;***********************************************************************
-; I have been given permission to distribute this program 
-; by the author and copyright holder, Peter Jennings.  
-; Please get his permission if you wish to 
-; re-distribute by other channels.
 
+; All rights reserved.
+
+; Redistribution and use in source and binary forms, with or without
+; modification, are permitted provided that the following conditions
+; are met:
+; 1. Redistributions of source code must retain the above copyright
+;    notice, this list of conditions and the following disclaimer.
+; 2. Redistributions in binary form must reproduce the above copyright
+;    notice, this list of conditions and the following disclaimer in the
+;    documentation and/or other materials provided with the distribution.
+; 3. The name of the author may not be used to endorse or promote products
+;    derived from this software without specific prior written permission.
+
+; THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR
+; IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+; OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+; IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+; INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+; NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+; DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+; THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+; THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+;
 ; modified by Daryl Rictor to work over a 
 ; serial terminal connection, August 2002.
-
+;
+; Updated with corrections to earlier OCR errors by Bill Forster, August 2005.
+;
    cpu 65c02
    page 0,132
 ;
@@ -195,7 +216,7 @@ ON4		LDA	XMAXC        	; SAVE ACTUAL
 ;		
 		LDA	#$08       	; STATE=8
 		STA	STATE        	; GENERATE
-;		JSR	OHM          	; CONTINUATION
+		JSR	GNM          	; CONTINUATION
 		JSR	UMOVE         	; MOVES
 ;		
 		JMP	STRATGY       	; FINAL EVALUATION
@@ -253,7 +274,7 @@ ERROR		JMP	CHESS
 ;		
 ;      GENERATE ALL MOVES FOR ONE
 ;      SIDE, CALL JANUS AFTER EACH
-;      ONE FOR NEXT STE?
+;      ONE FOR NEXT STEP
 ;		
 ;
 GNMZ		LDX	#$10            ; CLEAR
@@ -266,7 +287,7 @@ GNM		LDA	#$10            ; SET UP
 		STA	PIECE        	; PIECE
 NEWP		DEC	PIECE        	; NEW PIECE
 		BPL	NEX           	; ALL DONE?
-		RTS			; #NAME?
+		RTS			;    -YES
 ;		
 NEX		JSR	RESET        	; READY
 		LDY	PIECE        	; GET PIECE
@@ -375,13 +396,13 @@ ETC		SEC
 ;		
 ;        CMOVE CALCULATES THE TO SQUARE
 ;        USING SQUARE AND THE MOVE
-;       TABLE  FLAGS SET AS FOLLOWS:
-;       N#NAME?	MOVE
-;       V#NAME?	(LEGAL UNLESS IN CR)
-;       C#NAME?	BECAUSE OF CHECK
-;       [MY &THANKS TO JIM BUTTERFIELD
+;       TABLE,  FLAGS SET AS FOLLOWS:
+;       N - ILLEGAL MOVE
+;       V - CAPTURE (LEGAL UNLESS IN CH)
+;       C - ILLEGAL BECAUSE OF CHECK
+;       [MY THANKS TO JIM BUTTERFIELD
 ;        WHO WROTE THIS MORE EFFICIENT
-;        VERSION OF CMOVE)
+;        VERSION OF CMOVE]
 ;		
 CMOVE		LDA	SQUARE       	; GET SQUARE
 		LDX	MOVEN       	; MOVE POINTER
@@ -420,7 +441,7 @@ SPX		LDA  	STATE         	; SHOULD WE
 ;       TIME CONSUMING, IT IS NOT
 ;       ALWAYS DONE	
 ;		
-CHKCHK	PHA				; STATE  #392
+CHKCHK	        PHA			; STATE
 		PHP	
 		LDA	#$F9
 		STA	STATE         	; GENERATE
@@ -521,7 +542,7 @@ STRV		TSX
 ;       -CHECKS FOR CHECK OR CHECKMATE
 ;       AND ASSIGNS VALUE TO MOVE
 ;		
-CKMATE	LDY	BMAXC         		; CAN BLK CAP
+CKMATE	        LDX	BMAXC         	; CAN BLK CAP
 		CPX	POINTS       	; MY KING?
 		BNE	NOCHEK	
 		LDA	#$00           	; GULP!
@@ -580,7 +601,6 @@ NOOPEN	LDX	#$0C            	; FINISHED
 		LDX	#$04           	; STATE=4
 		STX	STATE        	; GENERATE AND
 		JSR	GNMZ          	; TEST AVAILABLE
-;
 ;	MOVES
 ;		
 		LDX	BESTV        	; GET BEST MOVE
@@ -621,8 +641,8 @@ DROL		ASL	DIS3          	; KEY
 STRATGY	CLC	
 		LDA	#$80
 		ADC	WMOB         	; PARAMETERS
-		ADC	WMAXC        	; WITH WHEIGHT
-		ADC	WCC          	; OF O25
+		ADC	WMAXC        	; WITH WEIGHT
+		ADC	WCC          	; OF 0.25
 		ADC	WCAP1
 		ADC	WCAP2
 		SEC	
@@ -640,14 +660,14 @@ POS		LSR
 		ADC	#$40
 		ADC	WMAXC       	; PARAMETERS
 		ADC	WCC         	; WITH WEIGHT
-		SEC			; OF 05
+		SEC			; OF 0.5
 		SBC	BMAXC
 		LSR			; **************
 		CLC	
 		ADC	#$90
 		ADC	WCAP0       	; PARAMETERS
 		ADC	WCAP0       	; WITH WEIGHT
-		ADC	WCAP0       	; OF 10
+		ADC	WCAP0       	; OF 1.0
 		ADC	WCAP0
 		ADC	WCAP1
 		SEC			; [UNDER OR OVER-
@@ -704,14 +724,14 @@ POUT2		TYA			; scan the pieces for a location match
 		clc			; 
 		adc   	temp		; combine row & col to determine square color  
 		and   	#$01		; is board square white or blk?
-		bne	pout25 		; white, print space
+		beq	pout25 		; white, print space
 		lda   	#"*"		; black, print *
 		db	$2c		; used to skip over LDA #$20
 POUT25		LDA   	#$20		; ASCII space
 		JSR   	syschout	; PRINT ONE ASCII CHR - SPACE
 		JSR   	syschout	; PRINT ONE ASCII CHR - SPACE
 POUT3		INY			; 
-	        TYA			; get row number
+                TYA			; get row number
             	AND   	#$08		; have we completed the row?	 
             	BEQ   	POUT1		; no, do next column
 		LDA   	#"|"		; yes, put the right edge on
@@ -830,17 +850,17 @@ syshexout      PHA                     ;  prints AA hex digits
                JSR   PrintDig          ;
                PLA                     ;
 PrintDig       AND   #$0F              ;  prints A hex nibble (low 4 bits)
-               PHX
+               PHY
                TAY                     ;
                LDA   Hexdigdata,Y      ;
-               PLX
+               PLY
                jmp   syschout          ;
 
 Hexdigdata	asc	"0123456789ABCDEF"
-banner		asc	"MicroChess (c) 1996-2002 Peter Jennings, peterj@benlo.com"
+banner		asc	"MicroChess (c) 1996-2005 Peter Jennings, www.benlo.com"
 		db	$0d, $0a, $00
 cpl		asc	"WWWWWWWWWWWWWWWWBBBBBBBBBBBBBBBBWWWWWWWWWWWWWWWW"
-cph		asc	"KQCCBBRRPPPPPPPPKQCCBBRRPPPPPPPP"
+cph		asc	"KQRRBBNNPPPPPPPPKQRRBBNNPPPPPPPP"
 		db	$00
 ;
 ; end of added code
