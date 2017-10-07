@@ -259,7 +259,7 @@ mnemo	("adca",	standard,	0x89)
 mnemo	("oraa",	standard,	0x8a)
 mnemo	("adda",	standard,	0x8b)
 mnemo	("cpx",		standard,	0x8c)
-mnemo	("jsr",		standard2,	0x8d)
+mnemo	("jsr",		standard3,	0x8d)
 mnemo	("lds",		standard,	0x8e)
 mnemo	("sts",		standard2,	0x8f)
 
