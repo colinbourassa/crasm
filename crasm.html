@@ -173,8 +173,8 @@ The following operators are recognized on expressions.
 <CENTER><TABLE BORDER CELLPADDING=5>
 <TR VALIGN=top><TD ALIGN=CENTER><B>Syntax</B></TD><TD ALIGN=CENTER><B>Result</B></TD><TD ALIGN=CENTER><B>Description</B></TD></TR>
 <TR VALIGN=top><TD><I>abs</I><B>{</B><I>abs</I><B>}</B></TD><TD><I>bspec</I></TD><TD>bit reference, e.g. <B>pia{3}</B></TD></TR>
-<TR VALIGN=top><TD><B>ADDR(</B><I>abs</I><B>)</B></TD><TD><I>abs</I></TD><TD>address from a bit reference</TD></TR>
-<TR VALIGN=top><TD><B>BIT(</B><I>abs</I><B>)</B></TD><TD><I>abs</I></TD><TD>bit number from a bit reference</TD></TR>
+<TR VALIGN=top><TD><B>ADDR(</B><I>bspec</I><B>)</B></TD><TD><I>abs</I></TD><TD>address from a bit reference</TD></TR>
+<TR VALIGN=top><TD><B>BIT(</B><I>bspec</I><B>)</B></TD><TD><I>abs</I></TD><TD>bit number from a bit reference</TD></TR>
 <TR VALIGN=top><TD><B>-&nbsp;</B><I>abs</I></TD><TD><I>abs</I></TD><TD>two's complement</TD></TR>
 <TR VALIGN=top><TD><B>~&nbsp;</B><I>abs</I></TD><TD><I>abs</I></TD><TD>one's complement</TD></TR>
 <TR VALIGN=top><TD><I>abs</I><B>&nbsp;&lt;&lt;&nbsp;</B><I>abs</I></TD><TD><I>abs</I></TD><TD>left shift</TD></TR>
@@ -205,7 +205,7 @@ Examples:
 <BR>
 <B> 'A'-80H </B>
 <BR>
-<B> (base+0x12) 
+<B> (base+0x12)</B> 
 </DL>
 <P>
 The last example causes a warning because the parenthesis
@@ -363,15 +363,19 @@ Insert a null byte in order to make the program counter even or odd.
 <B>ENDC</B>
 </DT><DD>
 Conditional assembly:
+A conditional expression <I>condexpr</I> is either a single expression (see above), or
+two expressions separated by a comparison operator: <b>==</b> or <b>=</b> tests whether
+the two expressions are equal, <b>&lt;&gt;</b> tests that they are not equal, 
+<b>&lt;=</b>, <b>&gt;=</b>, <b>&lt;</b>, and <b>&gt;</b> perform comparison tests. 
 If expression
 <I>condexpr</I>
-is non zero, 
-process the lines located between the
+is true or non zero, the assembler
+processes the lines located between the
 <B>IF</B>
 and the
 <B>ELSE</B>
 pseudo-mnemonics.
-Otherwise process the lines located between the
+Otherwise it processes the lines located between the
 <B>ELSE</B>
 and the
 <B>ENDC</B>
