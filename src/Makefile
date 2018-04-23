@@ -1,5 +1,5 @@
 SHELL   =/bin/sh
-CFLAGS  = -O
+CFLAGS  = -O -Wall
 LDFLAGS	= 
 LIBS    = -lm
 RM	= rm

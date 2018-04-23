@@ -111,6 +111,7 @@ extern void closescodefile(void);
 extern void setpc(long unsigned int addr);
 extern void insert8(unsigned char x);
 extern void insert16(short unsigned int x);
+extern void insert24(unsigned int x);
 extern void insert32(unsigned int x);
 
 /* external: output.c */

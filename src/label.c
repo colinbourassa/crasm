@@ -167,7 +167,7 @@ findlabel(char *name)
 */
 
 struct label *
-deflabel(char *name, unsigned char flags, unsigned char type, int value)
+deflabel(char *name, unsigned char flags, unsigned char type, long value)
 {
 	register struct label *q;
 	

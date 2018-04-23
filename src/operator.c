@@ -144,6 +144,7 @@ cstbinary(struct result *presult, char *s)
 void
 cstascii(struct result *presult, char *s)
 {
+	register unsigned long oval;
 	register unsigned long val;
 	register int r;
 	register char delimit;
@@ -172,9 +173,11 @@ cstascii(struct result *presult, char *s)
 					break;
 			default:	error("Bad \\X sequence");
 			};
-		if ( val> 0xffffff )
-			error(overflow);
+                oval = val;
 		val = (val<<8) + r;
+                if ((val>>8) != oval)
+                  error(overflow);
+
 	};
 	if (*++s)
 		error("syntax error");

@@ -88,6 +88,19 @@ insert16(short unsigned int x)
 }
 
 void
+insert24(unsigned int x)
+{
+	if (asmflags & F_LOHI)
+	{	insert16(x);
+		insert8(x>>16);
+	}
+	else
+	{	insert8(x>>16);
+		insert16(x);
+	}
+}
+
+void
 insert32(unsigned int x)
 {
 	if (asmflags & F_LOHI)

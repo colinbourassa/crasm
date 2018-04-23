@@ -37,7 +37,7 @@ struct label
 	byte flags,type;
 	short modifier;
 	int (*ptr)();
-	int value;
+	long value;
 };
 
 
@@ -79,7 +79,7 @@ extern struct label *searchlabel(char *name);
 extern struct label *findlabel(char *name);
 extern struct result *parse(char *expr);
 extern struct label *makelabel(char *name, unsigned char flags, unsigned char type);
-extern struct label *deflabel(char *name, unsigned char flags, unsigned char type, int value);
+extern struct label *deflabel(char *name, unsigned char flags, unsigned char type, long value);
 extern void init_label_list(struct label *array);
 extern void undeflabels(struct label *q);
 
