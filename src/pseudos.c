@@ -106,6 +106,11 @@ Xdc(int modifier, char *label, char *mnemo, char *oper)
 {
 	char *s1,*s2;
 	
+	if ( !oper )
+	{	error("need an operand");
+		return 1;
+	}
+
 	while ( filter( oper, "?_,_?", &s1,&s2 ) )
 	{	oper=s2;
 		stocke(s1,modifier);
