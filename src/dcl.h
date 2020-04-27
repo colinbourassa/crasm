@@ -48,17 +48,20 @@ typedef signed char byte;
 
 /***************************************************************************/
 
-int asmflags;
-int passnumber;
-int macrolevel;
-int advance;
+extern int asmflags;
+extern int passnumber;
+extern int macrolevel;
+extern int advance;
 
-FILE *file,*scode;
-char *filename,*scodename;
+extern FILE* file;
+extern FILE* scode;
+extern char* filename;
+extern char* scodename;
 
-char curline[256];
-int  linenumber;
-char lineprefix;
+extern char curline[256];
+
+extern int linenumber;
+extern char lineprefix;
 
 /* asmflags */
 #define F_CPU_GV		(1<<0)
@@ -82,8 +85,10 @@ char lineprefix;
 
 /* plus CPU defined FLAGS */
 
-int plen,ppos,llen,lpos;
-
+extern int plen;
+extern int ppos;
+extern int llen;
+extern int lpos;
 
 /***************************************************************************/
 
