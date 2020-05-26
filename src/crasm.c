@@ -149,8 +149,7 @@ crasm(int flag)
 
 #ifdef DEBUG
 	outputEOP();
-	asmflags &= ~ (F_NOLIST | F_NOWARNING | F_NOCODE | F_NOERROR );
-#else
+#endif
 	asmflags &= ~F_NOERROR;
 	if (flag & SCODE)
 		asmflags &= ~F_NOCODE;
@@ -158,7 +157,6 @@ crasm(int flag)
 		asmflags &= ~F_NOLIST;
 	if (flag & WARN)
 		asmflags &= ~F_NOWARNING;
-#endif
 	
 
 	
@@ -207,7 +205,7 @@ pass(int n)
 	
 	starlabel = findlabel("*");
 	starlabel->flags |= UNDEF;
-	starlabel->flags &= ~NOREDEF;
+	starlabel->flags &= ~(NOREDEF|FORWARD);
 	
 	
 	passnumber=n;

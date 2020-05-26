@@ -38,7 +38,7 @@ Xequ(int modifier, char *label, char *mnemo, char *oper)
 	struct label *l;
 	
 	r=parse(oper);
-	r->flags &= ~( UNDEF | USED | NOREDEF );
+	r->flags &= ~( UNDEF | USED | NOREDEF | FORWARD );
 	
 	if ( r->type == L_ABSOLUTE || r->type == L_RELATIVE )
 		if ( macrolevel==0 || asmflags & F_MACROLIST_ON )
