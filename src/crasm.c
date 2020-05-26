@@ -43,6 +43,24 @@ jmp_buf errorjump;
 int errnumber,warnnumber;
 int segment;
 extern int includelevel, thiscall;
+struct label* starlabel;
+int llen;
+int ppos;
+int plen;
+int lpos;
+int linenumber;
+char lineprefix;
+char* filename;
+char* scodename;
+char curline[256];
+
+FILE* file;
+FILE* scode;
+
+int asmflags;
+int passnumber;
+int macrolevel;
+int advance;
 
 void 
 jmp_buf_copy(jmp_buf out, jmp_buf in)

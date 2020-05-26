@@ -97,9 +97,8 @@ extern int macrocall(struct label *labmacro, int status, char *oper);
 /* external: pseudos.c */
 extern void checktype(struct result *r, int type);
 
-
 /* common */
-struct label *lroot;
-struct label *starlabel;
+extern struct label* lroot;
+extern struct label* starlabel;
 
 #endif
