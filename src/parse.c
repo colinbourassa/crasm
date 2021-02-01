@@ -181,7 +181,8 @@ struct result *
 parse(char *expr)
 {
 	char *dummy;
-
+	if (!expr || !*expr)
+		error ( "expression expected" );
 	if ( filter(expr,"(?)",&dummy) )
 		warning("external parenthesis ignored");
 	reverse(expr);
