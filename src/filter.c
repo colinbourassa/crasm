@@ -59,8 +59,9 @@ filter(char *s, char *fil, ...)
 	register char *starts, *startf;
 	register int quote;
 	char *oldbufferpos;
-	char *str_start = s;
+	char *str_start = (s) ? s : "";
 
+        s = str_start;
 	oldbufferpos=bufferpos;
 	startf=starts= NULL;
 	va_start(ap, fil);
