@@ -79,6 +79,8 @@ where the brackets delimit optional parts.
 .BI "" label " = " expression " [;" comment "]"
 .br
 .BI "[" label "] " mnemonic " " operand " [;" comment "]"
+.br
+.BI "" label "[;" comment "]"
 .PP
 Comments are introduced by a semicolon 
 .BR "" "(" ";" ")"
@@ -86,6 +88,11 @@ and extend to the end of the line.
 Labels are identifiers containing up to 36 alphanumeric 
 characters (including period and underscore). Labels
 cannot start with a digit.
+Crasm does not usually pays attention to the column position
+of the line components. The only exception is the case
+of a line containing only a label and possibly a comment.
+In that case the label must start in column zero.
+.PP
 The format of the mnemonics and operands 
 field depends on the selected micro-processor.
 A few mnemonics are valid for all processors
@@ -116,7 +123,6 @@ underscores
 .BR "" "(" "_" ")."
 Labels cannot start with a digit.  
 They are case insensitive.
-.PP
 Labels starting with a period
 .BR "" "(" "." ")"
 are local labels whose scope is either limited
@@ -219,6 +225,8 @@ Syntax	Result	Description
 =
  \fIabs\fB << \fIabs\fR	\fIabs\fR	left shift
  \fIabs\fB >> \fIabs\fR	\fIabs\fR	right shift
+ \fBHI(\fIabs\fB)\fR	\fIabs\fR	high byte ((abs>>8)&$ff)
+ \fBLO(\fIabs\fB)\fR	\fIabs\fR	low byte (abs&$ff)
 =
  \fIabs\fB | \fIabs\fR	\fIabs\fR	bitwise or
  \fIabs\fB & \fIabs\fR	\fIabs\fR	bitwise and
