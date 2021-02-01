@@ -283,6 +283,7 @@ asmline(char *s, int status)
 {
 	char *label,*mnemo,*oper;
 	register struct label *labmnemo;
+	int linestartswithoutblanks = 0;
 	
 	advance    = 0;
 	if (starlabel->flags & UNDEF)
@@ -293,6 +294,8 @@ asmline(char *s, int status)
 	};
 	
 	zerobuffer();
+	if (*s!=' ' && *s!='\t')
+		linestartswithoutblanks = 1;
 
 /* on traite
   XXX ; REMARK
@@ -316,11 +319,13 @@ asmline(char *s, int status)
 	}
 
 /*   autorise:
-    LABEL= MNEMO
+    LABEL = MNEMO
 	MNEMO
   LABEL MNEMO
   	MNEMO OPERAND
   LABEL MNEMO OPERAND
+     also:
+  LABEL when line starts without blanks 
 */
 
 	if (filter ( s, "?_=_?", &label,&oper ) && nospacein(label) )
@@ -348,7 +353,18 @@ asmline(char *s, int status)
 	}
 	
 	if ( labmnemo==NULL )
+	{
+		if ( linestartswithoutblanks && label==NULL && oper == NULL && mnemo != NULL)
+		{
+			label = mnemo;
+			if (status & 2)
+				herelabel(label);			
+			if ( status & 1 )
+				outputline();
+			return 0;                
+		}
 		error( "unknown macro or mnemonic");		
+	}
 	if ( labmnemo->flags & NOLABEL )
 		if (label)
 			error("labels not allowed here");
