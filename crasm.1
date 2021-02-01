@@ -436,8 +436,10 @@ Invocations of the macro can specify a list of comma
 separated operands.  The character sequences 
 \fB\\1\fR, \fB\\2\fR, ... \fB\\\fIN\fR
 in the macro definition are replaced by the supplied operands.
-The character sequence \fB\\0\fR is replaced by the number
+The character sequence \fB\\#\fR is replaced by the number
 of supplied operands.
+The character sequence \fB\\*\fR is replaced by the
+unparsed macro arguments.
 .in -7n
 .PP
 .BI "EXITM"

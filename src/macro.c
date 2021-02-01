@@ -250,7 +250,9 @@ Xexitm(int status, char *label, char *mnemo, char *oper)
 		error ( "no operand allowed in EXITM statement");
 	if (!macrolevel && (status & 1))
 		outputline();
-	return EXITM;
+	if (macrolevel && (status & 2))
+		return EXITM;
+	return 0;
 }
 
 int
@@ -260,7 +262,9 @@ Xendm(int status, char *label, char *mnemo, char *oper)
 		error ( "no operand allowed in ENDM statement");
 	if (!macrolevel && (status & 1))
 		outputline();
-	return ENDM;
+	if (macrolevel && (status & 2))
+		return ENDM;
+	return 0;
 }
 
 int
@@ -425,15 +429,16 @@ linegets(char *buffer, int length)
 			{	s2++;
 				*s1++= numarg+'0';
 			}
-			else if ( *s2>='1' && *s2<='9' )
+			else if ( *s2 == '*' || ( *s2>='1' && *s2<=numarg+'0' ) )
 			{	register char *s;
 				s= replace[ *s2-'1' ];
-				if ( *s2++ <= numarg+'0')
-					while ( *s )
-					{	if (s1-buffer>length-10)
-							break;
-						*s1++=*s++;
-					}
+				if ( *s2++ == '*' )
+					s= replace[9];
+				while ( *s )
+				{	if (s1-buffer>length-10)
+						break;
+					*s1++=*s++;
+				}
 			}
 			else
 				*s1++='\\';
@@ -485,7 +490,7 @@ extern int segment;
 int
 macrocall(struct label *labmacro, int status, char *oper)
 {
-	char replace[9][60];
+	char replace[10][60];
 	register int slevel,flag;
 	int numarg,oldsegment,mystatus;
 	jmp_buf errjmpsav;
@@ -503,7 +508,12 @@ macrocall(struct label *labmacro, int status, char *oper)
 		
 	numarg=0;
 	oldsegment=segment;
-	
+	replace[9][0] = 0;
+	if (oper && *oper)
+	{
+		strncpy(replace[9],oper,59);
+		replace[9][59]=0;
+	}
 	while ( oper && *oper )
 	{	char *arg1,*arg2;
 		if ( numarg > 8 )

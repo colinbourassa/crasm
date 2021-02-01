@@ -370,7 +370,7 @@ asmline(char *s, int status)
 						label,mnemo,oper    );
 
 	if ( labmnemo->type == L_MACRO )
-	{	if (!label && oper && !strncmp(oper,"MACRO",5))
+	{	if (label && oper && !strncmp(oper,"MACRO",5))
 			error("macro is already defined");
 		if (status & 2)
 			macrocall( labmnemo,status,oper );
