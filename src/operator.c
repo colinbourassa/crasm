@@ -303,6 +303,21 @@ opbitnumb(struct result *presult, struct result *parg)
 }
 
 void
+oplo(struct result *presult, struct result *parg)
+{
+	checktype(presult,L_ABSOLUTE);
+	presult->value &= 0xff;
+}
+
+void
+ophi(struct result *presult, struct result *parg)
+{
+	checktype(presult,L_ABSOLUTE);
+	presult->value >>= 8;
+	presult->value &= 0xff;
+}
+
+void
 opmul(struct result *presult, struct result *parg)
 {
 	checktype(presult,L_ABSOLUTE);

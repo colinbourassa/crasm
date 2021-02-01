@@ -63,6 +63,8 @@ extern void cstlabel(struct result *presult, char *s);
 extern void cstoctal(struct result *presult, char *s);
 extern void opbitnumb(struct result *presult, struct result *parg);
 extern void opbitaddr(struct result *presult, struct result *parg);
+extern void oplo(struct result *presult, struct result *parg);
+extern void ophi(struct result *presult, struct result *parg);
 
 struct oplist 
 {	char *filtre;
@@ -84,6 +86,8 @@ struct oplist
 	{ "?_~"		,1 ,1	/* logical NOT	*/		,opnot,},
 	{ ")_?_(_TIB"	,1 ,1   /* bit number   */		,opbitnumb,},
 	{ ")_?_(_RDDA"	,1 ,1   /* bit addr     */		,opbitaddr,},
+	{ ")_?_(_OL"	,1 ,1   /* bit number   */		,oplo,},
+	{ ")_?_(_IH"	,1 ,1   /* bit addr     */		,ophi,},
 	{ "}_?_{_?"	,2 ,1	/* directbit	*/		,opbit,},
 	{ ")_?_("	,-1,1	/* parenthesis	*/		,error,},
 
