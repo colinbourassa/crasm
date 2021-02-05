@@ -396,7 +396,7 @@ The default value is zero.
 Insert a null byte in order to make the program counter even or odd.
 .in -7n
 .PP
-.BI "IF " condexpr
+.BI "IF [" expr1 " [" oper " " expr2 "]]"
 .br
  ...
 .br
@@ -406,16 +406,23 @@ Insert a null byte in order to make the program counter even or odd.
 .br
 .BI "ENDC"
 .in +7n
-Conditional assembly:
-If expression
-.I condexpr
-is non zero, 
-process the lines located between the
+Conditional assembly.
+The argument of
+.B IF
+can be empty, can be a single expression
+.BR expr1 ,
+or can be two expressions separated by a comparison operator
+.BR > ", " < ", " >= ", " <= ", " == ", " != ", " = ", or " <> "."
+The assembler processes the lines located between the
 .B IF
 and the
 .BR ELSE 
-pseudo-mnemonics.
-Otherwise process the lines located between the
+pseudo-mnemonics if the comparison
+.I "expr1 oper expr2"
+is true or if the single expression
+.I expr1
+is nonzero.
+Otherwise it processes the lines located between the
 .B ELSE
 and the
 .BR ENDC
