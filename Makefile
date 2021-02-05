@@ -10,9 +10,14 @@ all:
 
 clean:
 	( cd src; ${MAKE} clean )
+	( cd test; ${MAKE} clean )
+
+test: all
+	( cd test; ${MAKE} test )
 
 install:
 	cp src/crasm ${bindir}/crasm
 	chmod 0755 ${bindir}/crasm
 	cp crasm.1 ${mandir}/man1/crasm.1
 	chmod 0644 ${mandir}/man1/crasm.1
+

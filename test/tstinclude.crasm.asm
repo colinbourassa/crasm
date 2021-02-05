@@ -2,6 +2,6 @@
 ;;; Public Domain.
 
 	ilist on
-	include tstmacros.crasm
+	include tstmacros.crasm.asm
 	ilist off
-	include tstif.crasm
+	include tstif.crasm.asm
