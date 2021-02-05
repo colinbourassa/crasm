@@ -429,16 +429,18 @@ linegets(char *buffer, int length)
 			{	s2++;
 				*s1++= numarg+'0';
 			}
-			else if ( *s2 == '*' || ( *s2>='1' && *s2<=numarg+'0' ) )
-			{	register char *s;
-				s= replace[ *s2-'1' ];
-				if ( *s2++ == '*' )
-					s= replace[9];
-				while ( *s )
+			else if ( *s2 == '*' || ( *s2>='1' && *s2<='9' ))
+                          {	char *s = 0;
+				if (*s2 == '*')
+					s = replace[9];
+				else if (*s2 >='0' && *s2 <= numarg+'0')
+					s = replace[ *s2-'1' ];
+				while ( s && *s )
 				{	if (s1-buffer>length-10)
 						break;
 					*s1++=*s++;
 				}
+				s2++;
 			}
 			else
 				*s1++='\\';
