@@ -9,5 +9,5 @@ TEST_OUTPUT := $(TEST_SOURCES:.asm=.out)
 test: ${TEST_OUTPUT}
 
 clean:
-	rm -r test_output
+	rm -rf test_output
 
