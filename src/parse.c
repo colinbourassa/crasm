@@ -103,7 +103,7 @@ struct oplist
   { "0B?", -2, 1 /* C binaire  */, cstbinary,},
   { "?Q", -2, 1 /* Intel octal  */, cstoctal,},
 
-  { NULL, 0 }
+  { NULL, 0, 0, 0 }
 };
 
 

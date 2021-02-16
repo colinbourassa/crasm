@@ -32,17 +32,17 @@
 /***************************************************************************/
 
 #define startmnemos(n)   struct label n[] = {
-#define endmnemos        {(void*)-1,(void*)-1} };
-#define mnemo(n,c,p)     {0,0,n,NOREDEF,L_MNEMO,p,c},
-#define directive(n,c)   {0,0,n,NOREDEF|NOLABEL,L_MNEMO,0,c},
-#define address(n,a)     {0,0,n,NOREDEF,L_ABSOLUTE,0,a},
-#define directbit(n,a,b) {0,0,n,NOREDEF,L_DIRECTBIT,b,a},
+#define endmnemos        {(void*)-1,(void*)-1,{0},0,0,0,0,0} };
+#define mnemo(n,c,p)     {0,0,n,NOREDEF,L_MNEMO,p,c,0},
+#define directive(n,c)   {0,0,n,NOREDEF|NOLABEL,L_MNEMO,0,c,0},
+#define address(n,a)     {0,0,n,NOREDEF,L_ABSOLUTE,0,a,0},
+#define directbit(n,a,b) {0,0,n,NOREDEF,L_DIRECTBIT,b,a,0},
 #define regs(n,r)        {0,0,n,NOREDEF,L_REGS,r,0,(1<<r)},
 
 #define bindvocabulary(n) init_label_list(n)
 
 #define startcpu      struct cpulist cpulist[] = {
-#define endcpu        {0,0} };
+#define endcpu        {0,0,0} };
 #define newcpu(c,i,a) {c,a,i,},
 
 

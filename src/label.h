@@ -44,7 +44,8 @@ struct label
 
 struct result
 {
-  byte flags, type;
+  byte flags;
+  byte type;
   short modifier;
   int (*ptr)();
   long value;

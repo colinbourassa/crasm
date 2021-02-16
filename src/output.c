@@ -82,7 +82,7 @@ void setpage(int xplen, int xllen)
     warning("page redefinition");
   }
 
-  if (xplen > 200 || (xplen && xplen < 10) || xllen < 39 || xllen > sizeof(linebuffer))
+  if (xplen > 200 || (xplen && xplen < 10) || xllen < 39 || xllen > (int)sizeof(linebuffer))
   {
     error("illegal values");
   }

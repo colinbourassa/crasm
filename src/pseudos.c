@@ -72,21 +72,27 @@ void checktype(struct result* r, int type)
   {
   case L_MNEMO:
     error("illegal use of a mnemonic");
+    break;
 
   case L_MACRO:
     error("illegal use of a macro");
+    break;
 
   case L_ABSOLUTE:
     error("illegal use of an absolute reference");
+    break;
 
   case L_RELATIVE:
     error("illegal use of a relative reference");
+    break;
 
   case L_REGS:
     error("illegal use of registers");
+    break;
 
   case L_DIRECTBIT:
     error("illegal use of direct bit reference");
+    break;
 
   default:
     error("Bad expression type");

@@ -26,8 +26,8 @@
 #include "dcl.h"
 #include "label.h"
 
-#define defpseudo(n,f,c)  {0,0,n,f|NOREDEF,L_MNEMO,0,c},
-#define defspecial(n,f,c,m) {0,0,n,f|NOREDEF,L_MNEMO,m,c},
+#define defpseudo(n,f,c)  {0,0,n,f|NOREDEF,L_MNEMO,0,c,0},
+#define defspecial(n,f,c,m) {0,0,n,f|NOREDEF,L_MNEMO,m,c,0},
 
 struct label pseudos[] =
 {
@@ -58,8 +58,6 @@ struct label pseudos[] =
   defpseudo("PAGE", NOLABEL, Xpage)
   defpseudo("OUTPUT", NOLABEL, Xoutput)
   defpseudo("SKIP", NOLABEL, Xskip)
-  {
-    (void*) -1, (void*) -1
-  }
+  { (void*) -1, (void*) -1, {0}, 0, 0, 0, 0, 0 }
 };
 

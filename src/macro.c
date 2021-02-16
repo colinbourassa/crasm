@@ -89,7 +89,7 @@ static struct compar
   { NULL,   NE }
 };
 
-static struct result zero = { 0, L_ABSOLUTE, 0, 0 };
+static struct result zero = { 0, L_ABSOLUTE, 0, 0, 0 };
 
 static int testtrue(char* oper)
 {
