@@ -412,7 +412,10 @@ void opdiv(struct result* presult, struct result* parg)
   presult->flags |= parg->flags;
   checktype(presult, L_ABSOLUTE);
   checktype(parg, L_ABSOLUTE);
-  presult->value /= parg->value;
+  if (parg->value != 0)
+  {
+    presult->value /= parg->value;
+  }
 }
 
 void oprlist(struct result* presult, struct result* parg)
