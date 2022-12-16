@@ -213,6 +213,11 @@ int Xnam(int modifier, char* label, char* mnemo, char* oper)
 /*  ASC string  */
 int Xasc(int modifier, char* label, char* mnemo, char* oper)
 {
+
+  if (oper == NULL) {
+    error("Need an operand");
+  }
+
   register char* s;
   register char r;
   register char delimiter;
