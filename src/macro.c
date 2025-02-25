@@ -573,7 +573,7 @@ void linegets(char* buffer, int length)
     while (s1 && *s1 && *s1 != '\n' && s1 - buffer < length)
     {
       if (*s1 == '\t' || isprint((unsigned char)*s1)
-          || !isascii((unsigned char)*s1))
+          || (((unsigned char)*s1 & 0x80) != 0))
       {
         *s2++ = *s1;
       }

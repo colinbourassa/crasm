@@ -206,7 +206,7 @@ void outputcar(char c)
       lastoffset = lpos;
     }
 
-    if (isprint((unsigned char)c) || !isascii((unsigned char)c))
+    if (isprint((unsigned char)c) || (((unsigned char)c & 0x80) != 0))
     {
       linebuffer[lpos++] = c;
     }
