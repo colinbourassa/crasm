@@ -35,7 +35,7 @@
 #define WARN  8
 #define INPUT 128
 
-extern struct label* searchlabel();
+extern struct label* searchlabel(char* name);
 extern struct label pseudos[];
 
 jmp_buf errorjump;
@@ -92,7 +92,7 @@ int main(int argc, char** argv)
 
   if (argc == 0)
   {
-    fatal("NOT from WB");
+    crasm_fatal("NOT from WB");
   }
 
   while (--argc)
@@ -162,7 +162,7 @@ void crasm(int flag)
 
   if (file == NULL)
   {
-    fatal("can't open source file");
+    crasm_fatal("can't open source file");
   }
 
   scode = NULL;
@@ -273,7 +273,7 @@ void pass(int n)
 
     if (asmline(curline, 3))
     {
-      error("ELSE, ENDC, ENDM, EXITM illegal here");
+      crasm_error("ELSE, ENDC, ENDM, EXITM illegal here");
     }
   }
 }
@@ -283,7 +283,7 @@ static void herelabel(char* label)
 {
   if (strcmp(label, "*") == 0)
   {
-    error("illegal star definition");
+    crasm_error("illegal star definition");
   }
 
   if (asmflags & F_ORG_GV)
@@ -294,7 +294,7 @@ static void herelabel(char* label)
   }
   else
   {
-    error("undefinable label: no org given");
+    crasm_error("undefinable label: no org given");
   }
 
   if (!(asmflags & F_CODE_ON))
@@ -448,7 +448,7 @@ int asmline(char* s, int status)
 
     if (checklabel(label) == FALSE)
     {
-      error("malformed label");
+      crasm_error("malformed label");
     }
   }
   else
@@ -468,7 +468,7 @@ start:
 
         if (checklabel(label) == FALSE)
         {
-          error("malformed label");
+          crasm_error("malformed label");
         }
 
         s = oper;
@@ -501,14 +501,14 @@ start:
       return 0;
     }
 
-    error("unknown macro or mnemonic");
+    crasm_error("unknown macro or mnemonic");
   }
 
   if (labmnemo->flags & NOLABEL)
   {
     if (label)
     {
-      error("labels not allowed here");
+      crasm_error("labels not allowed here");
     }
   }
 
@@ -516,7 +516,7 @@ start:
   {
     if (!label)
     {
-      error("label required here");
+      crasm_error("label required here");
     }
   }
   else if (label)
@@ -541,7 +541,7 @@ start:
   {
     if (label && oper && !strncmp(oper, "MACRO", 5))
     {
-      error("macro is already defined");
+      crasm_error("macro is already defined");
     }
 
     if (status & 2)
@@ -573,7 +573,7 @@ start:
   }
   else
   {
-    fatal("proc asmline failure");
+    crasm_fatal("proc asmline failure");
   }
 
   return 0;
@@ -593,7 +593,7 @@ start:
   ERRORS ROUTINES
 */
 
-void error(char* s)
+void crasm_error(char* s)
 {
   char raw[80];
   int oldflags;
@@ -626,7 +626,7 @@ void error(char* s)
 }
 
 
-void warning(char* s)
+void crasm_warning(char* s)
 {
   char raw[80];
   char c = toupper(*s);
@@ -645,7 +645,7 @@ void warning(char* s)
 }
 
 
-void fatal(char* s)
+void crasm_fatal(char* s)
 {
   printf("FATAL ERROR: %s\n", s);
   exit(10);
@@ -663,14 +663,14 @@ extern struct cpulist
 {
   char* name;
   int code;
-  int (*init)();
+  int (*init)(int);
 } cpulist[];
 
 
 void syntax(char* s)
 {
   register struct cpulist* q;
-  register int(*a)();
+  register int(*a)(int);
 
   a = NULL;
   printf("%s\n", s);

@@ -40,7 +40,7 @@ static int branch(int code, char* label, char* mnemo, char* oper)
 
   if (d != dd) /* test operand after: */
   {
-    error("too long branch");  /* if an error occurs during */
+    crasm_error("too long branch");  /* if an error occurs during */
   }
 
             /* the first pass, branch is */
@@ -60,7 +60,7 @@ static int single(int code, char* label, char* mnemo, char* oper)
 
   if (oper) /* no operand! */
   {
-    error("no operands allowed");
+    crasm_error("no operands allowed");
   }
 
   return 0;
@@ -113,7 +113,7 @@ static int findmode(char* oper, int* pvalue)
     }
   }
 
-  error("Unknown addressing mode");
+  crasm_error("Unknown addressing mode");
   return 0;
 }
 
@@ -143,11 +143,11 @@ static void codemode(int code, int add, int value)
     {
       if (add == 0x20)
       {
-        error("too long displacement");
+        crasm_error("too long displacement");
       }
       else
       {
-        warning("operand overflow");
+        crasm_warning("operand overflow");
       }
     }
   }
@@ -177,7 +177,7 @@ static int standard2(int code, char* label, char* mnemo, char* oper)
 
   if (add == 0) /* immediate -> error */
   {
-    error("Bad addressing mode");
+    crasm_error("Bad addressing mode");
   }
 
   return 0;
@@ -201,7 +201,7 @@ static int standard3(int code, char* label, char* mnemo, char* oper)
 
   if (add <= 0x10) /* immediate -> error */
   {
-    error("Bad addressing mode");
+    crasm_error("Bad addressing mode");
   }
 
   return 0;

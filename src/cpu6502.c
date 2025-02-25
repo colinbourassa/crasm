@@ -58,7 +58,7 @@ static int branch(int code, char* label, char* mnemo, char* oper)
 
   if (d != dd) /* test operand after: */
   {
-    error("too long branch"); /* if an error occurs during */
+    crasm_error("too long branch"); /* if an error occurs during */
   }
 
   return 0; /* the first pass, branch is */
@@ -75,7 +75,7 @@ static int single(int code, char* label, char* mnemo, char* oper) /* single byte
 
   if (oper) /* no operand! */
   {
-    error("no operands allowed");
+    crasm_error("no operands allowed");
   }
 
   return 0;
@@ -161,7 +161,7 @@ static int standard(int code, char* label, char* mnemo, char* oper)
 
     if (! q->filter)
     {
-      error("unknown addressing mode");
+      crasm_error("unknown addressing mode");
     }
 
     mode = q->num;
@@ -173,7 +173,7 @@ static int standard(int code, char* label, char* mnemo, char* oper)
       || ((code & F_noindx) && mode == 6)
       || ((code & F_noindy) && mode == 8))
   {
-    error("illegal addressing mode");
+    crasm_error("illegal addressing mode");
   }
 
   /* extract value */
@@ -201,7 +201,7 @@ static int standard(int code, char* label, char* mnemo, char* oper)
       }
       else if (value & 0xFF00)
       {
-        warning("operand overflow");
+        crasm_warning("operand overflow");
       }
     }
   }
@@ -217,7 +217,7 @@ static int standard(int code, char* label, char* mnemo, char* oper)
 
     if (!(offset = m2_offset[mode]))
     {
-      error("illegal addressing mode");
+      crasm_error("illegal addressing mode");
     }
 
     insert8(opcode = (m2_base + offset) & 0xFF);
@@ -241,7 +241,7 @@ static int standard(int code, char* label, char* mnemo, char* oper)
   {
     if (code == (0x60 | 0x100 | F_noimm | F_noindy))
     {
-      error("no ROR instruction on 6500");
+      crasm_error("no ROR instruction on 6500");
     }
   }
 
@@ -250,7 +250,7 @@ static int standard(int code, char* label, char* mnemo, char* oper)
     if (mode == 4 || opcode == 0x7c || opcode == 0x89 ||
                      opcode == 0x1a || opcode == 0x3a)
     {
-      error("illegal use of 65C02 addressing mode");
+      crasm_error("illegal use of 65C02 addressing mode");
     }
   }
 

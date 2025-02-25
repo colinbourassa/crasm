@@ -142,7 +142,7 @@ struct label* makelabel(char* name, unsigned char flags, unsigned char type)
 
   if (q != NULL)
   {
-    fatal("XX: makelabel");
+    crasm_fatal("XX: makelabel");
   }
 
   if (labelarray_inst == NULL)
@@ -153,7 +153,7 @@ struct label* makelabel(char* name, unsigned char flags, unsigned char type)
     }
     else
     {
-      fatal("no memory");
+      crasm_fatal("no memory");
     }
   }
 
@@ -218,11 +218,11 @@ struct label* deflabel(char* name, unsigned char flags, unsigned char type, long
     {
       if (q->type == L_ABSOLUTE || q->type == L_RELATIVE)
       {
-        error("illegal label redefinition");
+        crasm_error("illegal label redefinition");
       }
       else
       {
-        error("attempt to redefine a keyword");
+        crasm_error("attempt to redefine a keyword");
       }
     }
   }
@@ -279,7 +279,7 @@ void init_label_list(struct label* array)
         }
         else
         {
-          warning("user's symbol overrides new keyword");
+          crasm_warning("user's symbol overrides new keyword");
         }
       }
       else

@@ -50,7 +50,7 @@ void insert8(unsigned char x)
 {
   if (!(asmflags & F_ORG_GV))
   {
-    error("no org given");
+    crasm_error("no org given");
   }
 
   if (!(asmflags & F_NOCODE))
@@ -61,7 +61,7 @@ void insert8(unsigned char x)
 
       if (scode == NULL)
       {
-        fatal("can't open scode file");
+        crasm_fatal("can't open scode file");
       }
 
       rawextended = 0;

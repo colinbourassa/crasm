@@ -80,7 +80,7 @@ static int getreg(char* oper)
 
       if (indexflag || offsetflag)
       {
-        error(badop);
+        crasm_error(badop);
       }
 
       offsetflag = TRUE;
@@ -93,7 +93,7 @@ static int getreg(char* oper)
   {
     if (indexflag && indexflag != HL)
     {
-      error(badop);
+      crasm_error(badop);
     }
 
     indexflag = HL;
@@ -117,7 +117,7 @@ static int getreg(char* oper)
 
     if (arg8flag || arg16flag)
     {
-      error(badop);
+      crasm_error(badop);
     }
 
     arg16flag = TRUE;
@@ -131,7 +131,7 @@ static int getreg(char* oper)
   {
     if (arg8flag || arg16flag)
     {
-      error(badop);
+      crasm_error(badop);
     }
 
     arg16flag = TRUE;
@@ -143,7 +143,7 @@ static int getreg(char* oper)
 
   if (r->value != (1 << r->modifier))
   {
-    error("illegal register list");
+    crasm_error("illegal register list");
   }
 
   if (r->modifier == 12 || r->modifier == 13 || r->modifier == HLREGISTER)
@@ -165,7 +165,7 @@ static int getreg(char* oper)
 
     if (indexflag && indexflag != i)
     {
-      error(badop);
+      crasm_error(badop);
     }
 
     indexflag = i;
@@ -198,7 +198,7 @@ static int docode(int code)
 
     if (offset != (byte) offset)
     {
-      warning("offset overflow");
+      crasm_warning("offset overflow");
     }
   }
 
@@ -213,7 +213,7 @@ static int docode(int code)
 
     if (arg & 0xff00)
     {
-      warning("argument overflow");
+      crasm_warning("argument overflow");
     }
   }
   else if (arg16flag)
@@ -241,7 +241,7 @@ static int relbranch(int code, char* label, char* mnemo, char* oper)
 
   if (d != dd) /* test operand after */
   {
-    error("too long branch");  /* if an error occurs during */
+    crasm_error("too long branch");  /* if an error occurs during */
   }
 
   return 0; /* the first pass, branch is */
@@ -265,7 +265,7 @@ static int simple(int code, char* label, char* mnemo, char* oper)
 
   if (oper) /* no operand! */
   {
-    error("no operands allowed");
+    crasm_error("no operands allowed");
   }
 
   return 0;
@@ -294,7 +294,7 @@ static int im(int code, char* label, char* mnemo, char* oper)
 
   default:
     insert16(0);
-    error("Bad interruption mode");
+    crasm_error("Bad interruption mode");
   }
 
   return 0;
@@ -316,7 +316,7 @@ static int rst(int code, char* label, char* mnemo, char* oper)
 
   if (r->value & 0xffc7)
   {
-    error("Bad RST vector");
+    crasm_error("Bad RST vector");
   }
 
   return 0;
@@ -341,7 +341,7 @@ static int searchcond(int maxcond, char* oper, char** pres)
       }
     }
 
-    error("Bad condition code");
+    crasm_error("Bad condition code");
   }
 
   *pres = oper;
@@ -376,7 +376,7 @@ static int ret(int code, char* label, char* mnemo, char* oper)
       }
     }
 
-    error("Bad condition code");
+    crasm_error("Bad condition code");
   }
 
   return 0;
@@ -423,7 +423,7 @@ static int jp(int code, char* label, char* mnemo, char* oper)
     }
     else
     {
-      error("illegal indirection");
+      crasm_error("illegal indirection");
     }
   }
   else
@@ -481,7 +481,7 @@ static int ex(int code, char* label, char* mnemo, char* oper)
     }
   }
 
-  error("Illegal EX instruction");
+  crasm_error("Illegal EX instruction");
   return 0;
 }
 
@@ -506,7 +506,7 @@ static int inout(int code, char* label, char* mnemo, char* oper)
 
       if (reg != ACCUMULATOR)
       {
-        error(needacc);
+        crasm_error(needacc);
       }
 
       arg8flag = TRUE;
@@ -518,7 +518,7 @@ static int inout(int code, char* label, char* mnemo, char* oper)
 
       if (!isreg8(reg) || reg == 6)
       {
-        error("operates on reg8 only");
+        crasm_error("operates on reg8 only");
       }
 
       reg <<= 3;
@@ -532,12 +532,12 @@ static int inout(int code, char* label, char* mnemo, char* oper)
     }
     else
     {
-      error("port is (C) or (nn)");
+      crasm_error("port is (C) or (nn)");
     }
   }
   else
   {
-    error(badop);
+    crasm_error(badop);
   }
 
   return 0;
@@ -556,7 +556,7 @@ static int bitop(int code, char* label, char* mnemo, char* oper)
 
   if (!filter(oper, "?_,_?", &oper1, &oper2))
   {
-    error("two operands required");
+    crasm_error("two operands required");
   }
 
   r = parse(oper1);
@@ -565,14 +565,14 @@ static int bitop(int code, char* label, char* mnemo, char* oper)
 
   if (bit < 0 || bit > 7)
   {
-    error("illegal bit number");
+    crasm_error("illegal bit number");
   }
 
   reg = getreg(oper2);
 
   if (! isreg8(reg))
   {
-    error(needreg8);
+    crasm_error(needreg8);
   }
 
   docode(code + reg + (bit << 3));
@@ -589,7 +589,7 @@ static int onreg8(int code, char* label, char* mnemo, char* oper)
 
   if (!isreg8(reg))
   {
-    error(needreg8);
+    crasm_error(needreg8);
   }
 
   return docode(code + reg);
@@ -608,11 +608,11 @@ static int logical(int code, char* label, char* mnemo, char* oper)
   {
     if (getreg(op1) != ACCUMULATOR)
     {
-      error(needacc);
+      crasm_error(needacc);
     }
 
     oper = op2;
-    warning("One operand only. but i understand!");
+    crasm_warning("One operand only. but i understand!");
   }
 
   reg = getreg(oper);
@@ -645,7 +645,7 @@ static int stackop(int code, char* label, char* mnemo, char* oper)
 
   if (!isreg16(reg))
   {
-    error("Operates with AF,BC,DE,HL,IX,IY");
+    crasm_error("Operates with AF,BC,DE,HL,IX,IY");
   }
 
   return docode(code + (reg << 4));
@@ -662,7 +662,7 @@ static int arith(int code, char* label, char* mnemo, char* oper)
 
   if (!filter(oper, "?_,_?", &op1, &op2))
   {
-    error(badop);
+    crasm_error(badop);
   }
 
   reg = getreg(op1);
@@ -675,13 +675,13 @@ static int arith(int code, char* label, char* mnemo, char* oper)
   {
     if (indexflag != HL && code != 0x80)
     {
-      error("illegal index operation");
+      crasm_error("illegal index operation");
     }
 
     switch (code)
     {
     case 0x80:
-      code = 0x09  - 0x80;
+      code = 0x09 - 0x80;
       break;
 
     case 0x88:
@@ -697,14 +697,14 @@ static int arith(int code, char* label, char* mnemo, char* oper)
 
     if (!isreg16(reg))
     {
-      error(badop);
+      crasm_error(badop);
     }
 
     docode(code + (reg << 4));
   }
   else
   {
-    error(badop);
+    crasm_error(badop);
   }
 
   return 0;
@@ -731,7 +731,7 @@ static int incr(int code, char* label, char* mnemo, char* oper)
   }
   else
   {
-    error(badop);
+    crasm_error(badop);
   }
 
   return 0;
@@ -747,7 +747,7 @@ static int ld(int code, char* label, char* mnemo, char* oper)
 
   if (!filter(oper, "?_,_?", &op1, &op2))
   {
-    error(badop);
+    crasm_error(badop);
   }
 
   CLRALL;
@@ -760,7 +760,7 @@ static int ld(int code, char* label, char* mnemo, char* oper)
     {
       if (reg1 == reg2 && reg1 == MREGISTER)
       {
-        error(badop);
+        crasm_error(badop);
       }
 
       return docode(0x40 + (reg1 << 3) + reg2);
@@ -867,7 +867,7 @@ static int ld(int code, char* label, char* mnemo, char* oper)
     }
   }
 
-  error(badop);
+  crasm_error(badop);
   return 0;
 }
 

@@ -29,9 +29,6 @@
 #include <ctype.h>
 #include "label.h"
 
-extern void error();
-extern void fatal();
-
 /*   La suite prouve que les methodes classiques ont
      du bon, et que j'ai eu tort de n'en pas vouloir.
      REVERSE est une horreur imposee par le sens
@@ -40,35 +37,37 @@ extern void fatal();
 
 struct result calcresult;
 
-extern void opadd(struct result* presult, struct result* parg);
-extern void opsub(struct result* presult, struct result* parg);
-extern void opmul(struct result* presult, struct result* parg);
-extern void opdiv(struct result* presult, struct result* parg);
-extern void oprlist(struct result* presult, struct result* parg);
-extern void opminus(struct result* presult);
-extern void opor(struct result* presult, struct result* parg);
-extern void opand(struct result* presult, struct result* parg);
-extern void opxor(struct result* presult, struct result* parg);
-extern void oplsh(struct result* presult, struct result* parg);
-extern void oprsh(struct result* presult, struct result* parg);
-extern void opnot(struct result* presult);
-extern void opbit(struct result* presult, struct result* parg);
-extern void csthexa(struct result* presult, char* s);
-extern void cstdecimal(struct result* presult, char* s);
-extern void cstbinary(struct result* presult, char* s);
-extern void cstascii(struct result* presult, char* s);
-extern void cstlabel(struct result* presult, char* s);
-extern void cstoctal(struct result* presult, char* s);
-extern void opbitnumb(struct result* presult, struct result* parg);
-extern void opbitaddr(struct result* presult, struct result* parg);
-extern void oplo(struct result* presult, struct result* parg);
-extern void ophi(struct result* presult, struct result* parg);
+extern void opadd(struct result* presult, struct result* parg, char* s);
+extern void opsub(struct result* presult, struct result* parg, char* s);
+extern void opmul(struct result* presult, struct result* parg, char* s);
+extern void opdiv(struct result* presult, struct result* parg, char* s);
+extern void oprlist(struct result* presult, struct result* parg, char* s);
+extern void opminus(struct result* presult, struct result* parg, char* s);
+extern void opor(struct result* presult, struct result* parg, char* s);
+extern void opand(struct result* presult, struct result* parg, char* s);
+extern void opxor(struct result* presult, struct result* parg, char* s);
+extern void oplsh(struct result* presult, struct result* parg, char* s);
+extern void oprsh(struct result* presult, struct result* parg, char* s);
+extern void opnot(struct result* presult, struct result* parg, char* s);
+extern void opbit(struct result* presult, struct result* parg, char* s);
+extern void csthexa(struct result* presult, struct result* parg, char* s);
+extern void cstdecimal(struct result* presult, struct result* parg, char* s);
+extern void cstbinary(struct result* presult, struct result* parg, char* s);
+extern void cstascii(struct result* presult, struct result* parg, char* s);
+extern void cstlabel(struct result* presult, struct result* parg, char* s);
+extern void cstoctal(struct result* presult, struct result* parg, char* s);
+extern void opbitnumb(struct result* presult, struct result* parg, char* s);
+extern void opbitaddr(struct result* presult, struct result* parg, char* s);
+extern void oplo(struct result* presult, struct result* parg, char* s);
+extern void ophi(struct result* presult, struct result* parg, char* s);
+extern void operror(struct result* presult, struct result* parg, char* s);
 
 struct oplist
 {
   char* filtre;
-  short  type, nxt;
-  void (*callop)(); /*  (*callop)(&result,&arg )  */
+  short type;
+  short nxt;
+  void (*callop)(struct result*, struct result*, char*); /*  (*callop)(&result,&arg,&character)  */
 }  oplist[] =
 {
   /* ICI a l'envers , filtres des operations      */
@@ -89,7 +88,7 @@ struct oplist
   { ")_?_(_OL", 1, 1   /* bit number   */, oplo,},
   { ")_?_(_IH", 1, 1   /* bit addr     */, ophi,},
   { "}_?_{_?", 2, 1 /* directbit  */, opbit,},
-  { ")_?_(", -1, 1 /* parenthesis  */, error,},
+  { ")_?_(", -1, 1 /* parenthesis  */, operror,},
 
   /* ICI on teste les labels          */
   { "", -3, 1 /* label  */, cstlabel,},
@@ -103,9 +102,8 @@ struct oplist
   { "0B?", -2, 1 /* C binaire  */, cstbinary,},
   { "?Q", -2, 1 /* Intel octal  */, cstoctal,},
 
-  { NULL, 0, 0, 0 }
+  { NULL, 0, 0, NULL }
 };
-
 
 static void parse2(char* expr, struct result* presult)
 {
@@ -149,7 +147,7 @@ static void parse2(char* expr, struct result* presult)
 
       parse2(c2, presult);
       parse2(c1, &arg);
-      (q[j].callop)(presult, &arg);
+      (q[j].callop)(presult, &arg, NULL);
       return;
 
     case 1:     /* monadiques */
@@ -159,7 +157,7 @@ static void parse2(char* expr, struct result* presult)
       }
 
       parse2(ca, presult);
-      (*q->callop)(presult);
+      (*q->callop)(presult, NULL, NULL);
       return;
 
     case -1:    /* parentheses  */
@@ -177,7 +175,7 @@ static void parse2(char* expr, struct result* presult)
         break;
       }
 
-      (*q->callop)(presult, ca);
+      (*q->callop)(presult, NULL, ca);
       reverse(expr);
       return;
 
@@ -186,7 +184,7 @@ static void parse2(char* expr, struct result* presult)
 
       if (checklabel(expr))
       {
-        cstlabel(presult, expr);
+        cstlabel(presult, NULL, expr);
         reverse(expr);
         return;
       }
@@ -200,17 +198,17 @@ static void parse2(char* expr, struct result* presult)
   /* Noop: c'est forcement un decimal ou une cst ascii */
   if (isdigit(*expr))
   {
-    cstdecimal(presult, expr);
+    cstdecimal(presult, NULL, expr);
     reverse(expr);
   }
   else if (*expr == '\'' || *expr == '\"')
   {
-    cstascii(presult, expr);
+    cstascii(presult, NULL, expr);
     reverse(expr);
   }
   else
   {
-    error("syntax error in an expression");
+    crasm_error("syntax error in an expression");
   }
 }
 
@@ -221,12 +219,12 @@ struct result* parse(char* expr)
 
   if (!expr || !*expr)
   {
-    error("expression expected");
+    crasm_error("expression expected");
   }
 
   if (filter(expr, "(?)", &dummy))
   {
-    warning("external parenthesis ignored");
+    crasm_warning("external parenthesis ignored");
   }
 
   reverse(expr);

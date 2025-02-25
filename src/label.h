@@ -37,8 +37,8 @@ struct label
   char name[LABLEN];
   byte flags;
   byte type;
-  short modifier;
-  int (*ptr)();
+  int modifier;
+  int (*ptr)(int, char*, char*, char*);
   long value;
 };
 
@@ -46,8 +46,8 @@ struct result
 {
   byte flags;
   byte type;
-  short modifier;
-  int (*ptr)();
+  int modifier;
+  int (*ptr)(int, char*, char*, char*);
   long value;
 };
 

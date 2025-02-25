@@ -56,12 +56,12 @@ void settitle(char* s)
 
   if (flag)
   {
-    warning("title redefinition");
+    crasm_warning("title redefinition");
   }
 
   if (strlen(s) > 30)
   {
-    error("too long title");
+    crasm_error("too long title");
   }
 
   strcpy(title, s);
@@ -79,12 +79,12 @@ void setpage(int xplen, int xllen)
 
   if (flag)
   {
-    warning("page redefinition");
+    crasm_warning("page redefinition");
   }
 
   if (xplen > 200 || (xplen && xplen < 10) || xllen < 39 || xllen > (int)sizeof(linebuffer))
   {
-    error("illegal values");
+    crasm_error("illegal values");
   }
 
   plen = xplen;
@@ -239,7 +239,7 @@ void position(int n)
 {
   if (n >= llen)
   {
-    fatal("line length must be greater");
+    crasm_fatal("line length must be greater");
   }
 
   while (lpos < n)

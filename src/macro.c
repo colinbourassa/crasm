@@ -50,7 +50,7 @@ int Xelse(int status, char* label, char* mnemo, char* oper)
 {
   if (oper)
   {
-    error("no operand allowed for ELSE");
+    crasm_error("no operand allowed for ELSE");
   }
 
   return ELSE;
@@ -61,7 +61,7 @@ int Xendc(int status, char* label, char* mnemo, char* oper)
 {
   if (oper)
   {
-    error("no operand allowed for ENDC");
+    crasm_error("no operand allowed for ENDC");
   }
 
   return ENDC;
@@ -128,12 +128,12 @@ static int testtrue(char* oper)
   if (((r1.flags & UNDEF) && (r1.flags & FORWARD)) ||
       ((r2.flags & UNDEF) && (r2.flags & FORWARD)))
   {
-    error("forward defined expressions are illegal here");
+    crasm_error("forward defined expressions are illegal here");
   }
 
   if (r1.type != r2.type)
   {
-    error("Uncomparable expressions");
+    crasm_error("Uncomparable expressions");
   }
 
 
@@ -141,7 +141,7 @@ static int testtrue(char* oper)
   {
     if ((r1.type != L_ABSOLUTE) && (r1.type != L_RELATIVE))
     {
-      error("not a numeric expression");
+      crasm_error("not a numeric expression");
     }
 
     if ((q->flag & GT) && (r1.value > r2.value))
@@ -236,7 +236,7 @@ int Xif(int status, char* label, char* mnemo, char* oper)
     if (feof(file))
     {
       jmp_buf_copy(errorjump, errjmpsav);
-      error("Unexpected End of File");
+      crasm_error("Unexpected End of File");
     }
 
     flag = asmline(curline, status & mystatus);
@@ -256,7 +256,7 @@ int Xif(int status, char* label, char* mnemo, char* oper)
 
   if (flag == ENDM)
   {
-    error("ENDM illegal here");
+    crasm_error("ENDM illegal here");
   }
 
   if (asmflags & F_IFLIST_ON)
@@ -309,7 +309,7 @@ int Xif(int status, char* label, char* mnemo, char* oper)
     if (feof(file))
     {
       jmp_buf_copy(errorjump, errjmpsav);
-      error("Unexpected End of File");
+      crasm_error("Unexpected End of File");
     }
 
     flag = asmline(curline, status & mystatus);
@@ -328,7 +328,7 @@ int Xif(int status, char* label, char* mnemo, char* oper)
 
   if (flag == ENDM || flag == ELSE)
   {
-    error("ELSE or ENDM illegal here");
+    crasm_error("ELSE or ENDM illegal here");
   }
 
   if (asmflags & F_IFLIST_ON)
@@ -366,7 +366,7 @@ int Xexitm(int status, char* label, char* mnemo, char* oper)
 {
   if (oper)
   {
-    error("no operand allowed in EXITM statement");
+    crasm_error("no operand allowed in EXITM statement");
   }
 
   if (!macrolevel && (status & 1))
@@ -387,7 +387,7 @@ int Xendm(int status, char* label, char* mnemo, char* oper)
 {
   if (oper)
   {
-    error("no operand allowed in ENDM statement");
+    crasm_error("no operand allowed in ENDM statement");
   }
 
   if (!macrolevel && (status & 1))
@@ -420,12 +420,12 @@ int Xmacro(int status, char* label, char* mnemo, char* oper)
 
   if (oper)
   {
-    error("no operand allowed in macro statement");
+    crasm_error("no operand allowed in macro statement");
   }
 
   if (macrolevel)
   {
-    error("nested macro definition");
+    crasm_error("nested macro definition");
   }
 
   if (status & 1)
@@ -454,7 +454,7 @@ int Xmacro(int status, char* label, char* mnemo, char* oper)
     if (feof(file))
     {
       jmp_buf_copy(errorjump, errjmpsav);
-      error("Unexpected End of File");
+      crasm_error("Unexpected End of File");
     }
 
     if (!filter(curline, "?_;?", &s1, &s2))
@@ -480,7 +480,7 @@ int Xmacro(int status, char* label, char* mnemo, char* oper)
 
   if (*s1 || *s2)
   {
-    error("illegal ENDM instruction");
+    crasm_error("illegal ENDM instruction");
   }
 
   if (lbl)
@@ -585,7 +585,7 @@ void linegets(char* buffer, int length)
 
     if (s1 != s2)
     {
-      warning("Unprintable characters removed");
+      crasm_warning("Unprintable characters removed");
     }
 
     linenumber++;
@@ -617,7 +617,7 @@ void linegets(char* buffer, int length)
 
     if (!q)
     {
-      fatal("internal macrocall error");
+      crasm_fatal("internal macrocall error");
     }
 
     source[slevel].macrodesc.mlineptr = q->next;
@@ -626,7 +626,7 @@ void linegets(char* buffer, int length)
     {
       if (s1 - buffer > length - 10)
       {
-        warning("Too long line");
+        crasm_warning("Too long line");
         break;
       }
 
@@ -686,21 +686,21 @@ int Xinclude(int modifier, char* label, char* mnemo, char* oper)
 
   if (!oper)
   {
-    error("no filename");
+    crasm_error("no filename");
   }
 
   f = fopen(oper, "r");
 
   if (f == NULL)
   {
-    error("can't open include file");
+    crasm_error("can't open include file");
   }
 
   slevel = sourcelevel + 1;
 
   if (slevel >= MAXSOURCEDEEP)
   {
-    fatal("too many nested INCLUDEs and MACROs");
+    crasm_fatal("too many nested INCLUDEs and MACROs");
   }
 
   source[slevel].type = S_FILE;
@@ -734,8 +734,11 @@ extern int segment;
 int macrocall(struct label* labmacro, int status, char* oper)
 {
   char replace[10][60];
-  register int slevel, flag;
-  int numarg, oldsegment, mystatus;
+  register int slevel;
+  register int flag;
+  int numarg;
+  int oldsegment;
+  int mystatus;
   jmp_buf errjmpsav;
   char curlinesav[256];
 
@@ -745,7 +748,7 @@ int macrocall(struct label* labmacro, int status, char* oper)
 
   if (slevel >= MAXSOURCEDEEP)
   {
-    fatal("too many nested INCLUDEs and MACROs");
+    crasm_fatal("too many nested INCLUDEs and MACROs");
   }
 
   source[slevel].type     = S_MACRO;
@@ -770,7 +773,7 @@ int macrocall(struct label* labmacro, int status, char* oper)
 
     if (numarg > 8)
     {
-      error("Too many arguments in a macro call");
+      crasm_error("Too many arguments in a macro call");
     }
 
     if (filter(oper, "?_,_?", &arg1, &arg2))
@@ -842,7 +845,7 @@ int macrocall(struct label* labmacro, int status, char* oper)
 
   if (flag != ENDM && flag != EXITM)
   {
-    error("ELSE or ENDC illegal here");
+    crasm_error("ELSE or ENDC illegal here");
   }
 
   if (!(asmflags & F_MACROLIST_ON))

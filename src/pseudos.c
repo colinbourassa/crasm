@@ -71,31 +71,31 @@ void checktype(struct result* r, int type)
   switch (r->type)
   {
   case L_MNEMO:
-    error("illegal use of a mnemonic");
+    crasm_error("illegal use of a mnemonic");
     break;
 
   case L_MACRO:
-    error("illegal use of a macro");
+    crasm_error("illegal use of a macro");
     break;
 
   case L_ABSOLUTE:
-    error("illegal use of an absolute reference");
+    crasm_error("illegal use of an absolute reference");
     break;
 
   case L_RELATIVE:
-    error("illegal use of a relative reference");
+    crasm_error("illegal use of a relative reference");
     break;
 
   case L_REGS:
-    error("illegal use of registers");
+    crasm_error("illegal use of registers");
     break;
 
   case L_DIRECTBIT:
-    error("illegal use of direct bit reference");
+    crasm_error("illegal use of direct bit reference");
     break;
 
   default:
-    error("Bad expression type");
+    crasm_error("Bad expression type");
   }
 }
 
@@ -135,7 +135,7 @@ static void stocke(char* s, int modifier)
 
   if (r->value & mask)
   {
-    warning("Operand overflow");
+    crasm_warning("Operand overflow");
   }
 }
 
@@ -175,7 +175,7 @@ int Xds(int modifier, char* label, char* mnemo, char* oper)
 
     if (init & 0xffffff00)
     {
-      warning("multiple byte initialiser");
+      crasm_warning("multiple byte initialiser");
     }
   }
   else
@@ -202,7 +202,7 @@ int Xnam(int modifier, char* label, char* mnemo, char* oper)
 {
   if (!oper)
   {
-    error("need an operand");
+    crasm_error("need an operand");
   }
 
   settitle(oper);
@@ -215,7 +215,7 @@ int Xasc(int modifier, char* label, char* mnemo, char* oper)
 {
 
   if (oper == NULL) {
-    error("Need an operand");
+    crasm_error("Need an operand");
   }
 
   register char* s;
@@ -227,7 +227,7 @@ int Xasc(int modifier, char* label, char* mnemo, char* oper)
 
   if (delimiter != '\'' && delimiter != '\"')
   {
-    error("Bad operand syntax");
+    crasm_error("Bad operand syntax");
   }
 
   while ((r = *++s) != delimiter)
@@ -259,7 +259,7 @@ int Xasc(int modifier, char* label, char* mnemo, char* oper)
         break;
 
       default:
-        error("Bad \\X character");
+        crasm_error("Bad \\X character");
       }
     }
 
@@ -268,7 +268,7 @@ int Xasc(int modifier, char* label, char* mnemo, char* oper)
 
   if (*++s)
   {
-    error("syntax error");
+    crasm_error("syntax error");
   }
 
   return 0;
@@ -283,7 +283,7 @@ int Xcode(int modifier, char* label, char* mnemo, char* oper)
 {
   if (oper && *oper)
   {
-    error("no operand for CODE pseudo");
+    crasm_error("no operand for CODE pseudo");
   }
 
   segment = ++thiscall;
@@ -295,7 +295,7 @@ int Xdummy(int modifier, char* label, char* mnemo, char* oper)
 {
   if (oper && *oper)
   {
-    error("no operand for DUMMY pseudo");
+    crasm_error("no operand for DUMMY pseudo");
   }
 
   segment = ++thiscall;
@@ -320,7 +320,7 @@ int Xlist(int modifier, char* label, char* mnemo, char* oper)
   }
   else
   {
-    error("please: use option ON or OFF");
+    crasm_error("please: use option ON or OFF");
   }
 
   return 0;
@@ -339,7 +339,7 @@ int Xmlist(int modifier, char* label, char* mnemo, char* oper)
   }
   else
   {
-    error("please: use option ON or OFF");
+    crasm_error("please: use option ON or OFF");
   }
 
   return 0;
@@ -358,7 +358,7 @@ int Xclist(int modifier, char* label, char* mnemo, char* oper)
   }
   else
   {
-    error("please: use option ON or OFF");
+    crasm_error("please: use option ON or OFF");
   }
 
   return 0;
@@ -377,7 +377,7 @@ int Xilist(int modifier, char* label, char* mnemo, char* oper)
   }
   else
   {
-    error("please: use option ON or OFF");
+    crasm_error("please: use option ON or OFF");
   }
 
   return 0;
@@ -400,7 +400,7 @@ int Xpage(int modifier, char* label, char* mnemo, char* oper)
 
   if (!filter(oper, "?_,_?", &s1, &s2))
   {
-    error("syntax: PAGE or PAGE plen,llen ");
+    crasm_error("syntax: PAGE or PAGE plen,llen ");
   }
 
   checktype(r = parse(s1), L_ABSOLUTE);
@@ -422,7 +422,7 @@ int Xskip(int modifier, char* label, char* mnemo, char* oper)
 
   if (r > 100 || r < 0)
   {
-    warning("are you sure ?");
+    crasm_warning("are you sure ?");
   }
   else
   {
@@ -451,7 +451,7 @@ int Xoutput(int modifier, char* label, char* mnemo, char* oper)
   }
   else
   {
-    error("please, use options SCODE or HEX");
+    crasm_error("please, use options SCODE or HEX");
   }
 
   return 0;
@@ -479,7 +479,7 @@ int Xalign(int modifier, char* label, char* mnemo, char* oper)
   }
   else
   {
-    error("please, use options EVEN or ODD");
+    crasm_error("please, use options EVEN or ODD");
   }
 
   return 0;
@@ -495,12 +495,12 @@ int Xcpu(int modifier, char* label, char* mnemo, char* oper)
 
   if (!oper)
   {
-    error("Need CPU name");
+    crasm_error("Need CPU name");
   }
 
   if (asmflags & F_CPU_GV)
   {
-    error("One CPU only!");
+    crasm_error("One CPU only!");
   }
 
   q = cpulist;
@@ -519,7 +519,7 @@ int Xcpu(int modifier, char* label, char* mnemo, char* oper)
 
   if (! q->name)
   {
-    error("Unknown CPU name");
+    crasm_error("Unknown CPU name");
   }
 
   if (passnumber == 2)
@@ -537,11 +537,11 @@ int Xfail(int modf, char* label, char* mnemo, char* oper)
 {
   if (oper && *oper)
   {
-    error(oper);
+    crasm_error(oper);
   }
   else
   {
-    error("Fail instruction");
+    crasm_error("Fail instruction");
   }
 
   return 0;

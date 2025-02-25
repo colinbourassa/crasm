@@ -50,7 +50,7 @@ struct cpulist
 {
   char*  name;
   int    code;
-  void (*init)();
+  void (*init)(int);
 };
 
 #endif
